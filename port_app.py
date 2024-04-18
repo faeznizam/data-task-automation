@@ -79,11 +79,6 @@ process_dropdown = ttk.Combobox(root, textvariable=process_var, values=processes
 process_dropdown.pack(pady=10)
 process_dropdown.current(0)
 
-
-# create run button
-select_button = tk.Button(root, text="Run", command=run_process)
-select_button.pack()
-
 # create select folder button
 select_button2 = tk.Button(root, text="Browse", command=select_folder)
 select_button2.pack()
