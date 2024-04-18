@@ -3,55 +3,29 @@
 # 3. completion message
 # 4. open folder
 
-# import module
-from task_token import token_mainfile
-from task_response_leads import task_response_leads
 import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import filedialog
 import sys
 import io
-from tkinter import filedialog
-from tkinter import ttk
-
-
-# functions
+from task_token import token_mainfile
+from task_response_leads import task_response_leads
 
 def run_process(folder_path, selected_process):
-
     if selected_process == "Token":
-        # Redirect stdout to a StringIO object
         output_stream = io.StringIO()
         sys.stdout = output_stream
-        
-        # Call the main function
         token_mainfile.main(folder_path)
-        
-        # Get the output from the StringIO object
         output = output_stream.getvalue()
-        
-        # Reset stdout
         sys.stdout = sys.__stdout__
-        
-        # Insert the output into the Text widget
         output_text.insert(tk.END, output)
-
     elif selected_process == "Response Leads":
-
-        # Redirect stdout to a StringIO object
         output_stream = io.StringIO()
         sys.stdout = output_stream
-        
-        # Call the main function
         task_response_leads.main(folder_path)
-        
-        # Get the output from the StringIO object
         output = output_stream.getvalue()
-        
-        # Reset stdout
         sys.stdout = sys.__stdout__
-        
-        # Insert the output into the Text widget
         output_text.insert(tk.END, output)
-
 
 def select_folder():
     folder_path = filedialog.askdirectory()
@@ -60,31 +34,31 @@ def select_folder():
         selected_process = process_var.get()
         run_process(folder_path, selected_process)
 
-# tkinter code
 root = tk.Tk()
-root.title("Simple Tkinter Example")
+root.title("Task Simplifier")
 root.geometry("600x400")
+root.config(bg="#121212")
 
-# color scheme
-background_color = "#121212"
-text_bg_color = "#212121"
-text_fg_color = "#FFFFFF"
+# Create a style to customize the dropdown menu
+style = ttk.Style()
+style.configure('Custom.TCombobox', width=10)
 
-root.config(bg=background_color)
+# Create a frame for widgets
+frame = tk.Frame(root, bg="#121212")
+frame.pack(padx=10, pady=10, fill=tk.X)
 
-# create a dropdown menu
+# Create the dropdown menu
 process_var = tk.StringVar()
 processes = ["Token", "Response Leads"]
-process_dropdown = ttk.Combobox(root, textvariable=process_var, values=processes)
-process_dropdown.pack(pady=10)
-process_dropdown.current(0)
+process_dropdown = ttk.Combobox(frame, textvariable=process_var, values=processes, style='Custom.TCombobox')
+process_dropdown.pack(side=tk.LEFT, padx=(0, 5))
 
-# create select folder button
-select_button2 = tk.Button(root, text="Browse", command=select_folder)
-select_button2.pack()
+# Create the select folder button
+select_button = tk.Button(frame, text="Browse", command=select_folder)
+select_button.pack(side=tk.RIGHT)
 
-# output text
-output_text = tk.Text(root, height=10, width=70, bg=text_bg_color, fg=text_fg_color)
-output_text.pack(side=tk.BOTTOM, padx=10, pady=10)
+# Output text
+output_text = tk.Text(root, height=20, width=70, bg="#212121", fg="#FFFFFF")
+output_text.pack(padx=10, pady=10)
 
 root.mainloop()
