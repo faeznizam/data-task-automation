@@ -10,6 +10,7 @@ import sys
 import io
 from task_token import token_mainfile
 from task_response_leads import task_response_leads
+from task_onetimeconversion import task_tm_ot_conv_to_pledge
 
 def run_process(folder_path, selected_process):
     if selected_process == "Token":
@@ -26,6 +27,14 @@ def run_process(folder_path, selected_process):
         output = output_stream.getvalue()
         sys.stdout = sys.__stdout__
         output_text.insert(tk.END, output)
+    elif selected_process == "One Time Conversion To Pledge":
+        output_stream = io.StringIO()
+        sys.stdout = output_stream
+        task_tm_ot_conv_to_pledge.main(folder_path)
+        output = output_stream.getvalue()
+        sys.stdout = sys.__stdout__
+        output_text.insert(tk.END, output)
+
 
 def select_folder():
     folder_path = filedialog.askdirectory()
@@ -49,8 +58,12 @@ frame.pack(padx=10, pady=10, fill=tk.X)
 
 # Create the dropdown menu
 process_var = tk.StringVar()
-processes = ["Token", "Response Leads"]
-process_dropdown = ttk.Combobox(frame, textvariable=process_var, values=processes, style='Custom.TCombobox')
+processes = ["Token", "Response Leads","One Time Conversion To Pledge"]
+
+# Get max length for dropdown by using max for dropdown text
+max_text_length = max(len(process) for process in processes)
+
+process_dropdown = ttk.Combobox(frame, textvariable=process_var, values=processes, style='Custom.TCombobox', width=max_text_length)
 process_dropdown.pack(side=tk.LEFT, padx=(0, 5))
 
 # Create the select folder button
