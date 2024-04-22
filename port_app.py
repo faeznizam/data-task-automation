@@ -11,29 +11,28 @@ import io
 from task_token import token_mainfile
 from task_response_leads import task_response_leads
 from task_onetimeconversion import task_tm_ot_conv_to_pledge
+from task_burnt import task_tm_burnt
+from task_onhold import task_on_hold_hrsr
 
 def run_process(folder_path, selected_process):
-    if selected_process == "Token":
+    process_function = {
+        "Token" : token_mainfile.main, 
+        "Response Leads" : task_response_leads.main, 
+        "One Time Conversion To Pledge" : task_tm_ot_conv_to_pledge.main,
+        "Burnt" : task_tm_burnt.main, 
+        "On Hold" : task_on_hold_hrsr.main
+    }
+
+    if selected_process in process_function:
         output_stream = io.StringIO()
         sys.stdout = output_stream
-        token_mainfile.main(folder_path)
+        process_function[selected_process](folder_path)
         output = output_stream.getvalue()
         sys.stdout = sys.__stdout__
         output_text.insert(tk.END, output)
-    elif selected_process == "Response Leads":
-        output_stream = io.StringIO()
-        sys.stdout = output_stream
-        task_response_leads.main(folder_path)
-        output = output_stream.getvalue()
-        sys.stdout = sys.__stdout__
-        output_text.insert(tk.END, output)
-    elif selected_process == "One Time Conversion To Pledge":
-        output_stream = io.StringIO()
-        sys.stdout = output_stream
-        task_tm_ot_conv_to_pledge.main(folder_path)
-        output = output_stream.getvalue()
-        sys.stdout = sys.__stdout__
-        output_text.insert(tk.END, output)
+    else:
+        print("Selected process not found.")
+
 
 
 def select_folder():
@@ -58,7 +57,7 @@ frame.pack(padx=10, pady=10, fill=tk.X)
 
 # Create the dropdown menu
 process_var = tk.StringVar()
-processes = ["Token", "Response Leads","One Time Conversion To Pledge"]
+processes = ["Token", "Response Leads","One Time Conversion To Pledge", "Burnt", "On Hold"]
 
 # Get max length for dropdown by using max for dropdown text
 max_text_length = max(len(process) for process in processes)
