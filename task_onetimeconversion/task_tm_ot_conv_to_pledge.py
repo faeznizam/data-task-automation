@@ -2,55 +2,72 @@
 import pandas as pd
 from datetime import datetime
 import os
+import warnings
+from tabulate import tabulate
 
-# function
-def process_mobile_numbers(df):
-    # remove empty space and hyphens
-    df['Mobile Phone'] = df['Mobile Phone'].str.replace(r'[ +\-]', '', regex=True)
-    df['Mobile Phone'] = df['Mobile Phone'].apply(lambda x: reformat_mobile_number(x))
-    
-    return df
+from script import clean_phone_number
+from script import remove_duplicate
 
-def reformat_mobile_number(x):
+def rename_file():
+    # get current date
+    current_date = datetime.now() # get current date
+    date_format = current_date.strftime('%Y%m%d') # reformat date
+    # create new file name
+    new_file_name = 'TMOC_UTS_' + str(date_format) + '.xlsx' # get new file name
 
-    if (x.startswith('01') and len(x) == 10) or (x.startswith('011') and len(x) == 11):
-        return x[:3] + '-' + x[3:]
-    else:
-        return x
+    return new_file_name
 
 # main function 
-def main(folder_path):
+def main():
+    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
+
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onetimeconversion\test_data\Apr'
     
-    files = os.listdir(folder_path)
+    if not any('TMBN' in file for file in os.listdir(folder_path)):
 
-    # check file availability using flag
-    found_file = False
+        files = os.listdir(folder_path)
 
-    for file_name in files:
-        if 'TM One Time' in file_name:
-            print(file_name)
+        for file_name in files:
 
-            file_path = os.path.join(folder_path, file_name)
-            df = pd.read_excel(file_path, dtype={'Post Code': str})
+            # initialize list for saving file data
+            processed_file_info = []
 
-            df = process_mobile_numbers(df)
 
-            # rename the file
-            # get current date
-            date = datetime.now()
-            date_format = date.strftime('%Y%m%d')
+            if 'TM One Time' in file_name:
+                print(file_name)
 
-            # new file name
-            new_file_name = 'TMOC_UTS_' + str(date_format) + '.xlsx'
-            new_file_path = os.path.join(folder_path, new_file_name)
-            
-            # save file
-            df.to_excel(new_file_path, index=False)
-            print(f'File {new_file_name} been saved in the folder')
+                file_path = os.path.join(folder_path, file_name)
+                df = pd.read_excel(file_path, dtype={'Post Code': str})
 
-            # set flag to True if file found
-            found_file = True
+                modified_df = df
 
-    if not found_file:
-        print('File is not available. Check folder path for file.')
+                modified_df = clean_phone_number.process_mobile_numbers(modified_df)
 
+                # rename the file
+                new_file_name = rename_file()
+                new_file_path = os.path.join(folder_path, new_file_name)
+                
+                # save file
+                modified_df.to_excel(new_file_path, index=False)
+
+                # get data into list
+                processed_file_info.append({
+                    'File Name' : new_file_name, # get file name
+                    'Before Clean' : len(df), # count before clean
+                    'After Clean' : len(modified_df), # count after clean
+                    'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(modified_df, 'Mobile Phone') # flag invalid mobile number
+                }) 
+
+
+            # print completion status
+            print('Process completed')
+            # print the list in table form
+            print(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
+
+    else:
+        print('Files already been processed! Please check the folder') 
+
+    
+
+if __name__ == '__main__':
+    main()
