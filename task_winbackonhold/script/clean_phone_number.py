@@ -16,10 +16,14 @@ def reformat_mobile_number(x):
     else:
         return x
     
-def count_invalid_number(df):
-    column_name = 'Mobile Phone'
+def count_invalid_phone_number(df, column_name):
 
-    mask = (df[column_name].astype(str).apply(len) < 11) | (df[column_name].astype(str).apply(len) > 12)
+    mask = (
+        (df[column_name].astype(str).apply(len) < 11) | 
+        (df[column_name].astype(str).apply(len) > 12) |
+        (~ df[column_name].str.startswith('01'))      |
+        (~df[column_name].str.contains(r'^01\d+-'))              
+        )
     
     row_count = len(df[mask])
 
