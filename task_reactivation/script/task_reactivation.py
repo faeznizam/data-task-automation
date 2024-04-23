@@ -9,13 +9,6 @@ def read_file(file_path):
 
     return df
 
-def remove_duplicates(df):
-    column_to_check_duplicate = 'Mobile Phone'
-    df.drop_duplicates(subset = column_to_check_duplicate, keep = 'first', inplace = True)
-
-    #print('Duplicates has been removed')
-
-    return df
     
 def assign_campaign(file_path, df):
     if 'DL' in file_path and 'Reject' in file_path:
@@ -78,5 +71,5 @@ def generate_file_name(file_path, date_format):
 def save_file(subfolder_path, new_file_name, new_df):
     new_file_path = os.path.join(subfolder_path, new_file_name)
     new_df.to_excel(new_file_path, index=False)
-    print(f'{new_file_name} File has been save successfully')
+    
 
