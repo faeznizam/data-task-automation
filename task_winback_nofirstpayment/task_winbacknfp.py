@@ -62,7 +62,7 @@ def main(folder_path):
             }) 
 
         # print completion status
-        print('Process completed')
+        print('Process completed.')
         # print the list in table form
         print(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
 

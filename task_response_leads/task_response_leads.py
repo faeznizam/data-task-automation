@@ -1,7 +1,9 @@
 import pandas as pd
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import warnings
+from tabulate import tabulate
 
 def rename_file(file):
     # get extracted name from original file name
@@ -20,33 +22,56 @@ def rename_file(file):
 
     return new_file_name
 
-def main(folder_path):
+def main():
+    # remove warnings for stylesheets
+    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    for file in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, file)
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_response_leads\test_data\Mar'
 
-        # to preserve data with leading zero in these columns
-        columns_with_leading_zero = ['Post Code', 'Donation Amount', 'Home Phone', 'Work Phone', 'Mobile Phone']
-        # change dtype to str
-        dtype_dict = {column : str for column in columns_with_leading_zero}
+    # check if the file with selected name has been process
+    if not any('MCO_UTS' in file for file in os.listdir(folder_path)):
+        
+        # initialize list for saving file data
+        processed_file_info = []
 
-        # read file
-        df = pd.read_excel(file_path, dtype=dtype_dict)
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
 
-        # filter out column data = subscribe
-        updated_df = df[df['Description'] != 'Subscribe']
+            # to preserve data with leading zero in these columns
+            columns_with_leading_zero = ['Post Code', 'Donation Amount', 'Home Phone', 'Work Phone', 'Mobile Phone']
+            # change dtype to str
+            dtype_dict = {column : str for column in columns_with_leading_zero}
 
-        # applied rename file function
-        new_file_name = rename_file(file)   
+            # read file
+            df = pd.read_excel(file_path, dtype=dtype_dict)
 
-        # build file path for new file
-        new_file_path = os.path.join(folder_path, new_file_name)
+            # filter out column data = subscribe
+            modified_df = df[df['Description'] != 'Subscribe']
 
-        # save file
-        updated_df.to_excel(new_file_path, index=False)
+            # applied rename file function
+            new_file_name = rename_file(file)   
 
-        # print for visibility
-        print(f'Renamed {file} to {new_file_name} !. File Length: Original/New - {len(df)}/{len(updated_df)}')
+            # build file path for new file
+            new_file_path = os.path.join(folder_path, new_file_name)
+
+            # save file
+            modified_df.to_excel(new_file_path, index=False)
+
+            # get data into list
+            processed_file_info.append({
+                'File Name' : new_file_name, # get file name
+                'Before Clean' : len(df), # count before clean
+                'After Clean' : len(modified_df) # count after clean
+                
+            }) 
+
+        # print completion status
+        print('Process completed.')
+        # print the list in table form
+        print(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
+
+    else:
+        print('Files already been processed! Please check the folder')  
 
 
 if __name__ == '__main__':
