@@ -3,16 +3,23 @@
 # 3. completion message
 # 4. open folder
 
+# import python module
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 import sys
 import io
+
+# import .py file
 from task_token import token_mainfile
 from task_response_leads import task_response_leads
 from task_onetimeconversion import task_tm_ot_conv_to_pledge
 from task_burnt import task_tm_burnt
 from task_onhold import task_on_hold_hrsr
+from task_reactivation import task_reactivation_main
+from task_upgrade import task_upgrade
+from task_winbackonhold import task_winback_onhold
+from task_winback_nofirstpayment import task_winbacknfp
 
 def run_process(folder_path, selected_process):
     process_function = {
@@ -20,7 +27,12 @@ def run_process(folder_path, selected_process):
         "Response Leads" : task_response_leads.main, 
         "One Time Conversion To Pledge" : task_tm_ot_conv_to_pledge.main,
         "Burnt" : task_tm_burnt.main, 
-        "On Hold" : task_on_hold_hrsr.main
+        "On Hold" : task_on_hold_hrsr.main,
+        "Reactivation": task_reactivation_main.main,
+        "Upgrade" : task_upgrade.main, 
+        "Winback On Hold" : task_winback_onhold.main, 
+        "Winback No First Payment" : task_winbacknfp.main
+
     }
 
     if selected_process in process_function:
@@ -57,7 +69,8 @@ frame.pack(padx=10, pady=10, fill=tk.X)
 
 # Create the dropdown menu
 process_var = tk.StringVar()
-processes = ["Token", "Response Leads","One Time Conversion To Pledge", "Burnt", "On Hold"]
+processes = ["Token", "Response Leads","One Time Conversion To Pledge", "Burnt", "On Hold", "Reactivation"
+             "Winback On Hold", "Upgrade", "Winback No First Payment"]
 
 # Get max length for dropdown by using max for dropdown text
 max_text_length = max(len(process) for process in processes)
