@@ -4,3 +4,10 @@ This project aim to develop portable application using python to help simplify d
 
 1. Token
 2. One Time Donation to Pledge
+3. Winback On Hold
+4. Winback No First Payment
+5. Response Leads
+6. Burnt
+7. On Hold
+8. Reactivation
+9. Upgrade
