@@ -21,12 +21,6 @@ def populate_campaign(df, file):
     
     return df
 
-def remove_duplicates(df):
-    column_to_check_duplicate = 'Mobile Phone'
-    df.drop_duplicates(subset = column_to_check_duplicate, keep = 'first', inplace = True)
-
-    return df
-
 def rename_uts_file(file):
 
     current_date = datetime.now()
@@ -45,4 +39,4 @@ def save_file(df, new_filename, folder_path):
     new_file_path = os.path.join(folder_path, new_filename)
     df.to_excel(new_file_path, index=False)
 
-    print(f'{new_filename} has been saved in the folder')
+    

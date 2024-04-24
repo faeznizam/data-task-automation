@@ -25,13 +25,8 @@ def populate_campaign(df, file):
     
     return df
 
-def remove_duplicates(df):
-    column_to_check_duplicate = 'Mobile Phone'
-    df.drop_duplicates(subset = column_to_check_duplicate, keep = 'first', inplace = True)
 
-    return df
-
-def save_file(df, file_path, file):
+def save_file(df, file_path):
     df.to_excel(file_path, index=False)
 
-    print(f'{file} has been save to folder')
+    
