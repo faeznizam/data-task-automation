@@ -17,7 +17,7 @@ from task_onetimeconversion import task_tm_ot_conv_to_pledge
 from task_burnt import task_tm_burnt
 from task_onhold import task_on_hold_hrsr
 from task_reactivation import task_reactivation_main
-from task_upgrade import task_upgrade
+from PortableApp.task_upgrade import task_upgrade_part2
 from task_winbackonhold import task_winback_onhold
 from task_winback_nofirstpayment import task_winbacknfp
 
@@ -29,7 +29,7 @@ def run_process(folder_path, selected_process):
         "Burnt" : task_tm_burnt.main, 
         "On Hold" : task_on_hold_hrsr.main,
         "Reactivation": task_reactivation_main.main,
-        "Upgrade" : task_upgrade.main, 
+        "Upgrade" : task_upgrade_part2.main, 
         "Winback On Hold" : task_winback_onhold.main, 
         "Winback No First Payment" : task_winbacknfp.main
 
