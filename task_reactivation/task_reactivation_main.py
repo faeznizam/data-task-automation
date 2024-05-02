@@ -33,7 +33,8 @@ def main():
 
     print('Processing Reactivation Files ...')
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_reactivation\test_data\Apr'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_reactivation\test_data\Apr'
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\TM Reactivation\2024\May'
 
     dl_folder = os.path.join(folder_path, 'DL')
     rl_folder = os.path.join(folder_path, 'RL')

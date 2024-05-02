@@ -4,6 +4,7 @@ from datetime import datetime
 import os
 import warnings
 from tabulate import tabulate
+import time
 
 from script import clean_phone_number
 from script import remove_duplicate
@@ -19,11 +20,22 @@ def rename_file():
 
 # main function 
 def main():
-    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onetimeconversion\test_data\Apr'
-    
+    start_time = time.time()
+
+    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
+    warnings.filterwarnings("ignore", category=FutureWarning)
+
+    print('Processing One Time Conversion To Pledge file...')
+
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onetimeconversion\test_data\Apr'
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\TM One time conversion\2024\May'
+
+
     if not any('TMBN' in file for file in os.listdir(folder_path)):
+        
+        print('Checking existing file...')
+        print('No existing file detected. Creating the file...')
 
         files = os.listdir(folder_path)
 
@@ -60,12 +72,18 @@ def main():
 
 
             # print completion status
-            print('Process completed')
+            print('Process completed!')
+            print('Files has been saved in selected folder. ')
             # print the list in table form
+            print('Here is the file analysis for your reference.')
             print(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
 
     else:
         print('Files already been processed! Please check the folder') 
+
+    end_time = time.time()
+    code_runtime = end_time - start_time
+    print('Processing Time: {:2f} seconds'.format(code_runtime))
 
     
 
