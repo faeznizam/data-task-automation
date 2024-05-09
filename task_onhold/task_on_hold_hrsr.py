@@ -47,7 +47,8 @@ def main():
 
    print('Processing On Hold HRSR Files ...')
 
-   folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onhold\test_data\Apr'
+   #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onhold\test_data\Apr'
+   folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Hard and Soft Reject\2024\May - Copy'
 
    processed_file_info = []
    # startek
@@ -110,7 +111,7 @@ def main():
          new_file_path = os.path.join(ds_folder, new_file_name)
          process_ds.save_file(modified_df, new_file_path)
 
-      elif 'New Onhold HR Report - DS.xlsx' in file:
+      elif 'New Onhold HR Report' in file:
          file_path = os.path.join(ds_folder, file)
          df, modified_df = ds_process(file_path, file)
          new_file_name = 'OnHold DS HR Month 1.xlsx'

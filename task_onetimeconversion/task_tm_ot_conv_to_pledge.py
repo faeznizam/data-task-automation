@@ -5,7 +5,6 @@ import os
 import warnings
 from tabulate import tabulate
 import time
-
 from script import clean_phone_number
 from script import remove_duplicate
 
@@ -54,6 +53,8 @@ def main():
                 modified_df = df
 
                 modified_df = clean_phone_number.process_mobile_numbers(modified_df)
+
+                modified_df = remove_duplicate.remove_duplicates(modified_df, 'Mobile Phone')
 
                 # rename the file
                 new_file_name = rename_file()
