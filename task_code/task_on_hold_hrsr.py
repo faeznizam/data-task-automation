@@ -1,9 +1,9 @@
-from script import process_startek_file
-from script import startek_format
-from script import process_uts
-from script import process_ds
-from script import clean_phone_number
-from script import remove_duplicate
+from dependencies import process_startek_file
+from dependencies import startek_format
+from dependencies import process_uts
+from dependencies import process_ds
+from dependencies import clean_phone_number
+from dependencies import remove_duplicate
 
 import pandas as pd
 import os

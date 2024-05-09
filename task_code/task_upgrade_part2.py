@@ -4,10 +4,10 @@ import warnings
 from tabulate import tabulate
 from datetime import datetime
 
-from script import uts_file_format
-from script import copy_data_upgrade
-from script import remove_duplicate
-from script import clean_phone_number
+from dependencies import uts_file_format
+from dependencies import copy_data_upgrade
+from dependencies import remove_duplicate
+from dependencies import clean_phone_number
 
 def rename_file(file):
     # get current date

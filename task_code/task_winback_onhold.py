@@ -3,8 +3,8 @@ import os
 import warnings
 from tabulate import tabulate
 
-from script import clean_phone_number
-from script import remove_duplicate
+from dependencies import clean_phone_number
+from dependencies import remove_duplicate
 
 def rename_file(file):
     return f'{file[:-12]}.xlsx'

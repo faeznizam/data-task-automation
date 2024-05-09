@@ -4,9 +4,9 @@ import os
 import warnings
 from tabulate import tabulate
 
-from script import clean_phone_number
-from script import burnt_subfile
-from script import remove_duplicate
+from dependencies import clean_phone_number
+from dependencies import burnt_subfile
+from dependencies import remove_duplicate
 
 def rename_file():
     # get current date
