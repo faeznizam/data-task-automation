@@ -94,4 +94,4 @@ def task_month2_to_6_main(folder_path):
     # get running end time and calculate total runtime
     end_time = time.time()
     code_runtime = end_time - start_time
-    print('Processing Time: {:2f} seconds'.format(code_runtime))
+    logging.info('Processing Time: {:2f} seconds'.format(code_runtime))

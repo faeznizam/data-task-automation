@@ -1,6 +1,5 @@
 # import module from folder
-from .dependencies import clean_phone_number
-from .dependencies import remove_duplicate
+from .dependencies import clean_phone_number, remove_duplicate
 
 # import dependencies
 import pandas as pd
