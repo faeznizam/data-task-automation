@@ -1,3 +1,7 @@
+# import module from folder
+from .dependencies import clean_phone_number
+from .dependencies import remove_duplicate
+
 # import dependencies
 import pandas as pd
 from datetime import datetime
@@ -6,8 +10,7 @@ import warnings
 from tabulate import tabulate
 import time
 import logging
-from .dependencies import clean_phone_number
-from .dependencies import remove_duplicate
+
 
 def rename_file():
     current_date = datetime.now()
@@ -29,7 +32,7 @@ def task_onetimeconversion_main(folder_path):
     if not any('TMOC' in file for file in os.listdir(folder_path)):
 
         logging.info('Checking existing file...')
-        logging.info('No existing file detected. Creating the file...')
+        logging.info('No existing file detected. Process continue...')
 
         #Initiate list to get data
         processed_file_info = []
@@ -87,8 +90,7 @@ def task_onetimeconversion_main(folder_path):
             final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list.xlsx'), index=False)
             
             # print process status and analysis
-            logging.info('Process completed!')
-            logging.info('Files has been saved in selected folder.')
+            logging.info('Process completed!. Files has been saved in selected folder.')
             logging.info('Here is the file analysis for your reference.')
             # print a table to show list
             logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 

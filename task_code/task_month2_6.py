@@ -1,34 +1,36 @@
+# import module from folder
+from .dependencies import remove_duplicate
+
 # import dependencies
 import pandas as pd
 import os
 import warnings
 import time
-from dependencies import remove_duplicate
 from tabulate import tabulate
+import logging
 
-def main():
+def task_month2_to_6_main(folder_path):
     # get start time
     start_time = time.time()
 
-    # Ignore SettingWithCopyWarning
+    # Ignore SettingWithCopyWarning and openpyxl.styles.stylesheet
     pd.options.mode.chained_assignment = None
-
-    # Ignore specific UserWarning from openpyxl.styles.stylesheet
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    print('Processing Month 2 - 6 file...')
+    logging.info('Processing Month 2 - 6 file...')
 
     # get folder path
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_month2_6\test_data'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_month2_6\test_data'
 
     # initiate deleted list and process info
-    deleted_list = []
     processed_file_info = []
+    deleted_list = []
 
+    # check if files already been processed
     if not any('deleted_list' in file for file in os.listdir(folder_path)):
         
-        print('Checking existing file...')
-        print('No existing file detected. Creating the file...')
+        logging.info('Checking existing file...')
+        logging.info('No existing file detected. Process continue...')
 
         # iterate over all the file in folder
         for file in os.listdir(folder_path):
@@ -37,64 +39,59 @@ def main():
             file_path = os.path.join(folder_path, file)
 
             # read file
-            df = pd.read_excel(file_path)
+            original_df = pd.read_excel(file_path)
+            updated_df = original_df
 
             # fill in empty cell with empty string
-            df = df.fillna('')
-            # set up condition for filtering row to delete
-            to_delete_row = ( ~df['Mailing Country'].str.lower().isin(['malaysia', 'brunei', 'brunei darussalam', 'singapore', '']) |
-                        (df['Mailing Zip/Postal Code'] == "") | 
-                        (df['Mailing Zip/Postal Code'] == '-')
+            updated_df = updated_df.fillna('')
+
+            # set up condition for filtering row to delete and assign new dataframe
+            rows_to_exclude = ( ~original_df['Mailing Country'].str.lower().isin(['malaysia', 'brunei', 'brunei darussalam', 'singapore', '']) |
+                        (original_df['Mailing Zip/Postal Code'] == "") | 
+                        (original_df['Mailing Zip/Postal Code'] == '-')
                         )
-            # get opposite condition 
-            to_update_row = ~ to_delete_row
-            # build both to update and to delete dataframe
-            modified_df = df[to_update_row]
-            df_to_delete = df[to_delete_row]
+            excluded_df = original_df[rows_to_exclude]
 
-            # drop duplicate 
-            modified_df = remove_duplicate.remove_duplicates(modified_df, 'Mailing Street')
+            # use opposite condition to filter only wanted row
+            rows_to_update = ~ rows_to_exclude
+            updated_df = updated_df[rows_to_update]
+            
+            # remove duplicate based on column
+            updated_df = remove_duplicate.remove_duplicates(updated_df, 'Mailing Street')
 
-            # get new file name based on original file name
+            # create new file name, create path, save file
             new_file_name = f'{file[:-25]}.xlsx'
-            # build file path
             new_file_path = os.path.join(folder_path, new_file_name)
-            # save to excel 
-            modified_df.to_excel(new_file_path, index=False)
+            updated_df.to_excel(new_file_path, index=False)
 
-            # set up condition to append to list when df is not empty
-            if not df_to_delete.empty:
+            # check if the df is not empty then append to deleted list
+            if not excluded_df.empty:
                 # add file name to row
-                df_to_delete['File Name'] = f'{file[:-25]}.xlsx'
+                excluded_df['File Name'] = new_file_name
                 # append to list
-                deleted_list.append(df_to_delete)
+                deleted_list.append(excluded_df)
 
-            # get data into list
+            # append row count for before and after to list in dictionary.
             processed_file_info.append({
                 'File Name' : new_file_name, # get file name
-                'Before Clean' : len(df), # count before clean
-                'After Clean' : len(modified_df), # count after clean
+                'Before Clean' : len(original_df), # count before clean
+                'After Clean' : len(updated_df), # count after clean
             }) 
 
-        # combine all df in the list
+        # combine all df that has been append to list and save the file in excel
         final_deleted_df = pd.concat(deleted_list, ignore_index=True)
-        # save to excel
         final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list.xlsx'), index=False)
 
         # print completion status
-        print('Process completed!')
-        print('Files has been saved in selected folder. ')
-        # print the list in table form
-        print('Here is the file analysis for your reference.')
-        print(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
+        logging.info('Process completed!. Files has been saved in selected folder.')
+        logging.info('Here is the file analysis for your reference.')
+        # print a table to show list
+        logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
 
     else: 
-        print('Files already been processed! Please check the folder') 
+        logging.info('Files already been processed! Please check the folder') 
 
     # get running end time and calculate total runtime
     end_time = time.time()
     code_runtime = end_time - start_time
     print('Processing Time: {:2f} seconds'.format(code_runtime))
-
-if __name__ == '__main__':
-    main()

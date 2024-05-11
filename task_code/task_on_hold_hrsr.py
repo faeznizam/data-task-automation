@@ -1,3 +1,4 @@
+# import module from folder
 from dependencies import process_startek_file
 from dependencies import startek_format
 from dependencies import process_uts
@@ -5,11 +6,14 @@ from dependencies import process_ds
 from dependencies import clean_phone_number
 from dependencies import remove_duplicate
 
+# import dependencies
 import pandas as pd
 import os
 import warnings
 from tabulate import tabulate
+import logging
 
+# function for different process
 def startek_process(file_path, file, folder_path):
    df = pd.read_excel(file_path, dtype={'Post Code': str})
    modified_df = startek_format.initialize_startek_format()
@@ -42,13 +46,13 @@ def ds_process(file_path, file):
 
    return df, modified_df
 
-def main():
+def task_onhold_hrsr_main(folder_path):
    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-   print('Processing On Hold HRSR Files ...')
+   logging.info('Processing On Hold HRSR Files ...')
 
    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onhold\test_data\Apr'
-   folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Hard and Soft Reject\2024\May - Copy'
+   #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Hard and Soft Reject\2024\May - Copy'
 
    processed_file_info = []
    # startek
@@ -158,6 +162,3 @@ def main():
    print('On Hold HRSR Files has been processed completely!')
    # print the list in table form
    print(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
-
-if __name__ == "__main__":
-   main()
