@@ -79,8 +79,12 @@ def task_month2_to_6_main(folder_path):
             }) 
 
         # combine all df that has been append to list and save the file in excel
-        final_deleted_df = pd.concat(deleted_list, ignore_index=True)
-        final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list.xlsx'), index=False)
+        # empty list gave out False boolean
+        if deleted_list:
+            final_deleted_df = pd.concat(deleted_list, ignore_index=True)
+            final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list.xlsx'), index=False)
+        else:
+            logging.info('Deleted list was not created since there is no data!')
 
         # print completion status
         logging.info('Process completed!. Files has been saved in selected folder.')
