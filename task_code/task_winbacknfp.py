@@ -1,5 +1,5 @@
 # import module from folder
-from .dependencies import clean_phone_number, remove_duplicate
+from .dependencies import mobile_phone_handler, duplication_handler
 
 # import dependencies
 from datetime import datetime
@@ -58,10 +58,10 @@ def task_winbacknfp_main(folder_path):
             # save df to modified in new variable
             updated_df = original_df
             # clean phone number
-            updated_df = clean_phone_number.process_mobile_numbers(updated_df)
+            updated_df = mobile_phone_handler.process_mobile_numbers(updated_df)
             
             # exclude invalid number rows and assign to new dataframe
-            rows_to_exclude = clean_phone_number.delete_condition(updated_df, 'Mobile Phone')
+            rows_to_exclude = mobile_phone_handler.delete_condition(updated_df, 'Mobile Phone')
             excluded_df = updated_df[rows_to_exclude]
 
             # use opposite condition to filter the wanted number
@@ -69,7 +69,7 @@ def task_winbacknfp_main(folder_path):
             updated_df = updated_df[rows_to_update]
         
             # remove duplicate
-            updated_df = remove_duplicate.remove_duplicates(updated_df, 'Mobile Phone')
+            updated_df = duplication_handler.remove_duplicates(updated_df, 'Mobile Phone')
             
             # rename file using function, build new file path and save file
             new_file_name = rename_file(file)

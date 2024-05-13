@@ -1,5 +1,5 @@
 # import from sub file
-from dependencies import uts_file_format, copy_data_reactivation, task_reactivation_subfile, clean_phone_number, remove_duplicate
+from dependencies import uts_file_format, copy_data_reactivation, task_reactivation_subfile, mobile_phone_handler, duplication_handler
 
 # import from module
 from tabulate import tabulate
@@ -27,10 +27,10 @@ def process_files(file_path):
     updated_df = copy_data_reactivation.copy_data_reactivation(updated_df, original_df)
 
     # reformat phone number
-    updated_df = clean_phone_number.process_mobile_numbers(updated_df)
+    updated_df = mobile_phone_handler.process_mobile_numbers(updated_df)
 
     # use condition to filter rows to be excluded and build df
-    rows_to_exclude = clean_phone_number.delete_condition(updated_df, 'Mobile Phone')
+    rows_to_exclude = mobile_phone_handler.delete_condition(updated_df, 'Mobile Phone')
     excluded_df = updated_df[rows_to_exclude]
 
     # use opposite condition to filter the wanted rows and build df
@@ -38,7 +38,7 @@ def process_files(file_path):
     updated_df = updated_df[rows_to_update]
 
     # remove duplicate based on column
-    updated_df = remove_duplicate.remove_duplicates(updated_df, 'Mobile Phone')
+    updated_df = duplication_handler.remove_duplicates(updated_df, 'Mobile Phone')
 
     # populate campaign column
     updated_df = task_reactivation_subfile.assign_campaign(file_path, updated_df)

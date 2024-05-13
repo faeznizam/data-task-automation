@@ -1,5 +1,5 @@
 # import module from subfolder
-from task_code import task_onetimeconversion, task_month2_6, task_tm_burnt, task_response_leads, token_mainfile
+from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
 from task_code import task_winbacknfp
 
 
@@ -30,7 +30,7 @@ def browse_folder():
             task_month2_6.task_month2_to_6_main(folder_path)
             
         elif selected_processing_option == "TM Burnt":
-            task_tm_burnt.task_burnt_main(folder_path)
+            task_burnt.task_burnt_main(folder_path)
         elif selected_processing_option == "TM Reactivation":
             pass
         elif selected_processing_option == "TM Upgrade":
@@ -38,7 +38,7 @@ def browse_folder():
         elif selected_processing_option == "Response Leads":
             task_response_leads.task_response_leads_main(folder_path)
         elif selected_processing_option == "Token":
-            token_mainfile.task_token_main(folder_path)
+            task_token.task_token_main(folder_path)
 
 # Custom logging handler to redirect log messages to a QTextEdit widget
 class TextEditHandler(logging.Handler):

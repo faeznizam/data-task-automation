@@ -3,8 +3,8 @@ import os
 import warnings
 from tabulate import tabulate
 
-from dependencies import clean_phone_number
-from dependencies import remove_duplicate
+from dependencies import mobile_phone_handler
+from dependencies import duplication_handler
 
 def rename_file(file):
     return f'{file[:-12]}.xlsx'
@@ -30,8 +30,8 @@ def main():
                 df = pd.read_excel(file_path, dtype={'Post Code': str})
 
                 modified_df = df
-                modified_df = clean_phone_number.process_mobile_numbers(modified_df)
-                modified_df = remove_duplicate.remove_duplicates(modified_df, 'Mobile Phone')
+                modified_df = mobile_phone_handler.process_mobile_numbers(modified_df)
+                modified_df = duplication_handler.remove_duplicates(modified_df, 'Mobile Phone')
                 new_file_name = rename_file(file)
                 new_file_path = os.path.join(subfolder_path, new_file_name)
                 modified_df.to_excel(new_file_path, index=False)
@@ -39,7 +39,6 @@ def main():
                     'File Name' : new_file_name, # get file name
                     'Before Clean' : len(df), # count before clean
                     'After Clean' : len(modified_df), # count after clean
-                    'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(modified_df, 'Mobile Phone') # flag invalid mobile number
                 })
             # print completion status
             print('Process completed.')

@@ -3,8 +3,8 @@ from dependencies import process_startek_file
 from dependencies import startek_format
 from dependencies import process_uts
 from dependencies import process_ds
-from dependencies import clean_phone_number
-from dependencies import remove_duplicate
+from dependencies import mobile_phone_handler
+from dependencies import duplication_handler
 
 # import dependencies
 import pandas as pd
@@ -19,8 +19,8 @@ def startek_process(file_path, file, folder_path):
    modified_df = startek_format.initialize_startek_format()
    modified_df = startek_format.copy_data(modified_df, df)
    modified_df = startek_format.populate_pkg_column(file, modified_df)
-   modified_df = clean_phone_number.process_mobile_numbers(modified_df, 'PH_CELL')
-   modified_df = remove_duplicate.remove_duplicates(modified_df, 'PH_CELL')
+   modified_df = mobile_phone_handler.process_mobile_numbers(modified_df, 'PH_CELL')
+   modified_df = duplication_handler.remove_duplicates(modified_df, 'PH_CELL')
    new_file_name = process_startek_file.rename_startek_file(file)
    process_startek_file.save_file(modified_df, new_file_name, folder_path)
 
@@ -30,8 +30,8 @@ def uts_process(file_path, file, folder_path):
    df = process_uts.read_file(file_path)
    modified_df = df
    modified_df = process_uts.populate_campaign(modified_df, file)
-   modified_df = clean_phone_number.process_mobile_numbers(modified_df, 'Mobile Phone')
-   modified_df = remove_duplicate.remove_duplicates(modified_df, 'Mobile Phone')
+   modified_df = mobile_phone_handler.process_mobile_numbers(modified_df, 'Mobile Phone')
+   modified_df = duplication_handler.remove_duplicates(modified_df, 'Mobile Phone')
    new_file_name = process_uts.rename_uts_file(file)
    process_uts.save_file(modified_df, new_file_name, folder_path)
 
@@ -41,8 +41,8 @@ def ds_process(file_path, file):
    df = process_ds.read_file(file_path)
    modified_df = df
    modified_df = process_ds.populate_campaign(modified_df, file)
-   modified_df = clean_phone_number.process_mobile_numbers(modified_df, 'Mobile Phone')
-   modified_df = remove_duplicate.remove_duplicates(modified_df, 'Mobile Phone')
+   modified_df = mobile_phone_handler.process_mobile_numbers(modified_df, 'Mobile Phone')
+   modified_df = duplication_handler.remove_duplicates(modified_df, 'Mobile Phone')
 
    return df, modified_df
 
@@ -70,7 +70,6 @@ def task_onhold_hrsr_main(folder_path):
                   'File Name' : new_file_name, # get file name
                   'Before Clean' : len(df), # count before clean
                   'After Clean' : len(modified_df), # count after clean
-                  'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(modified_df, 'PH_CELL') # flag invalid mobile number
                })
       
    print('Processing Startek File Completed!')
@@ -91,7 +90,6 @@ def task_onhold_hrsr_main(folder_path):
                   'File Name' : new_file_name, # get file name
                   'Before Clean' : len(df), # count before clean
                   'After Clean' : len(modified_df), # count after clean
-                  'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(modified_df, 'Mobile Phone') # flag invalid mobile number
                })
    print('Processing UTS File Completed!')
    print(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
@@ -129,7 +127,6 @@ def task_onhold_hrsr_main(folder_path):
          'File Name' : new_file_name, # get file name
          'Before Clean' : len(df), # count before clean
          'After Clean' : len(modified_df), # count after clean
-         'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(modified_df, 'Mobile Phone') # flag invalid mobile number
                      })
 
 
@@ -150,7 +147,6 @@ def task_onhold_hrsr_main(folder_path):
       'File Name' : output_filename, # get file name
       'Before Clean' : 'NA', # count before clean
       'After Clean' : len(combine_df), # count after clean
-      'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(combine_df, 'Mobile Phone') # flag invalid mobile number
    })
 
 

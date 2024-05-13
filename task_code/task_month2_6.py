@@ -1,5 +1,5 @@
 # import module from folder
-from .dependencies import remove_duplicate
+from .dependencies import duplication_handler
 
 # import dependencies
 import pandas as pd
@@ -57,7 +57,7 @@ def task_month2_to_6_main(folder_path):
             updated_df = updated_df[rows_to_update]
             
             # remove duplicate based on column
-            updated_df = remove_duplicate.remove_duplicates(updated_df, 'Mailing Street')
+            updated_df = duplication_handler.remove_duplicates(updated_df, 'Mailing Street')
 
             # create new file name, create path, save file
             new_file_name = f'{file[:-25]}.xlsx'

@@ -6,8 +6,8 @@ from datetime import datetime
 
 from dependencies import uts_file_format
 from dependencies import copy_data_upgrade
-from dependencies import remove_duplicate
-from dependencies import clean_phone_number
+from dependencies import duplication_handler
+from dependencies import mobile_phone_handler
 
 def rename_file(file):
     # get current date
@@ -41,8 +41,8 @@ def main():
                 df = pd.read_excel(file_path)
                 new_df = uts_file_format.initalize_uts_file_format()
                 new_df = copy_data_upgrade.copy_data_upgrade(new_df, df)
-                new_df = clean_phone_number.process_mobile_numbers(new_df)
-                new_df = remove_duplicate.remove_duplicates(new_df, 'Mobile Phone')
+                new_df = mobile_phone_handler.process_mobile_numbers(new_df)
+                new_df = duplication_handler.remove_duplicates(new_df, 'Mobile Phone')
                 new_file_name = rename_file(file)
                 new_file_path = os.path.join(folder_path, new_file_name)
                 new_df.to_excel(new_file_path, index=False)
@@ -51,7 +51,6 @@ def main():
                     'File Name' : new_file_name, # get file name
                     'Before Clean' : len(df), # count before clean
                     'After Clean' : len(new_df), # count after clean
-                    'Invalid Phone Number' : clean_phone_number.count_invalid_phone_number(new_df, 'Mobile Phone') # flag invalid mobile number
                 })
 
                 
