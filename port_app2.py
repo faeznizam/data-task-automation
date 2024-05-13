@@ -16,9 +16,7 @@ def browse_folder():
         output_box.append("Selected processing option: " + selected_processing_option)
         
         if selected_processing_option == "TM One Time Conversion To Pledge":
-            # Call the processing function, which will log messages to the QTextEdit widget
             task_onetimeconversion.task_onetimeconversion_main(folder_path)
-            
         elif selected_processing_option == "TM On Hold Hard and Soft Reject":
             pass
         elif selected_processing_option == "TM Winback No First Payment":
@@ -26,9 +24,7 @@ def browse_folder():
         elif selected_processing_option == "TM Winback On Hold":
             pass
         elif selected_processing_option == "TM Month 2 - 6":
-            # Call the processing function, which will log messages to the QTextEdit widget
             task_month2_6.task_month2_to_6_main(folder_path)
-            
         elif selected_processing_option == "TM Burnt":
             task_burnt.task_burnt_main(folder_path)
         elif selected_processing_option == "TM Reactivation":
@@ -58,7 +54,7 @@ if __name__ == '__main__':
     window.setWindowTitle('Testing pyqt app')
 
     # Set position and size of window
-    window.setGeometry(100, 100, 400, 300)
+    window.setGeometry(100, 100, 600, 400)
 
     # Create a layout
     layout = QVBoxLayout()

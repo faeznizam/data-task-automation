@@ -46,11 +46,11 @@ def task_month2_to_6_main(folder_path):
             updated_df = updated_df.fillna('')
 
             # set up condition for filtering row to delete and assign new dataframe
-            rows_to_exclude = ( ~original_df['Mailing Country'].str.lower().isin(['malaysia', 'brunei', 'brunei darussalam', 'singapore', '']) |
-                        (original_df['Mailing Zip/Postal Code'] == "") | 
-                        (original_df['Mailing Zip/Postal Code'] == '-')
+            rows_to_exclude = ( ~updated_df['Mailing Country'].str.lower().isin(['malaysia', 'brunei', 'brunei darussalam', 'singapore', '']) |
+                        (updated_df['Mailing Zip/Postal Code'] == "") | 
+                        (updated_df['Mailing Zip/Postal Code'] == '-')
                         )
-            excluded_df = original_df[rows_to_exclude]
+            excluded_df = updated_df[rows_to_exclude]
 
             # use opposite condition to filter only wanted row
             rows_to_update = ~ rows_to_exclude
@@ -90,7 +90,8 @@ def task_month2_to_6_main(folder_path):
         logging.info('Process completed!. Files has been saved in selected folder.')
         logging.info('Here is the file analysis for your reference.')
         # print a table to show list
-        logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
+        logging.info('\n')
+        logging.info(tabulate(processed_file_info, headers="keys", tablefmt="html")) 
 
     else: 
         logging.info('Files already been processed! Please check the folder') 
@@ -98,4 +99,5 @@ def task_month2_to_6_main(folder_path):
     # get running end time and calculate total runtime
     end_time = time.time()
     code_runtime = end_time - start_time
+    logging.info('\n')
     logging.info('Processing Time: {:2f} seconds'.format(code_runtime))
