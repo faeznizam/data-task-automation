@@ -96,7 +96,8 @@ def task_onetimeconversion_main(folder_path):
             logging.info('Process completed!. Files has been saved in selected folder.')
             logging.info('Here is the file analysis for your reference.')
             # print a table to show list
-            logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid")) 
+            logging.info('\n')
+            logging.info(tabulate(processed_file_info, headers="keys", tablefmt="html")) 
 
     else:
         logging.info('Files already been processed! Please check the folder') 
@@ -104,4 +105,5 @@ def task_onetimeconversion_main(folder_path):
     # get end time for runtime and print
     end_time = time.time()
     code_runtime = end_time - start_time
+    logging.info('\n')
     logging.info('Processing Time: {:2f} seconds'.format(code_runtime))
