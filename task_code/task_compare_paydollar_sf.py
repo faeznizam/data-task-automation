@@ -6,7 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 def main():
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Compare Paydollar with SF\2024\Apr'
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf'
 
     for file in os.listdir(folder_path):
         if 'Online OT' in file:
@@ -38,6 +38,7 @@ def main():
         
             
         elif 'order' in file:
+            # CHANNEL TYPE BUANG DPL
 
             file_path = os.path.join(folder_path, file)
 
@@ -62,7 +63,30 @@ def main():
 
     print(merge_df)
 
+    not_in_merge_df = df3[~df3.isin(merge_df)]
+    not_in_merge_df.to_excel(os.path.join(folder_path, 'not_in_merge_df.xlsx'), index=False)
 
+# import dependency
+
+# read file
+
+# rename file, read file, get merchant ref column
+
+# read both file, get both column 
+
+# combine the column
+
+# compare both column to see missing row
+
+# if there is row missing, print id, if not print no row
+
+# from compared both column, get stage = pledge. 
+
+# if there is row match, save the file.
+
+# if not print no row match with stage = pledge. 
+
+# end
         
     
     
