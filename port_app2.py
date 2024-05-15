@@ -1,6 +1,6 @@
 # import module from subfolder
 from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
-from task_code import task_winbacknfp
+from task_code import task_winbacknfp, task_compare_paydollar_sf
 
 
 import sys
@@ -35,7 +35,9 @@ def browse_folder():
             task_response_leads.task_response_leads_main(folder_path)
         elif selected_processing_option == "Token":
             task_token.task_token_main(folder_path)
-
+        elif selected_processing_option == "Compare Paydollar and SF":
+            task_compare_paydollar_sf.task_compare_paydollarsf(folder_path)
+            
 # Custom logging handler to redirect log messages to a QTextEdit widget
 class TextEditHandler(logging.Handler):
     def __init__(self, widget):
@@ -51,7 +53,7 @@ if __name__ == '__main__':
     window = QWidget()
 
     # Set window title
-    window.setWindowTitle('Testing pyqt app')
+    window.setWindowTitle('Task Simplifier App')
 
     # Set position and size of window
     window.setGeometry(100, 100, 600, 400)
@@ -72,6 +74,7 @@ if __name__ == '__main__':
     processing_options.addItem("TM Upgrade")
     processing_options.addItem("Response Leads")
     processing_options.addItem("Token")
+    processing_options.addItem("Compare Paydollar and SF")
     # Add more processing options as needed
     layout.addWidget(processing_options)
 
