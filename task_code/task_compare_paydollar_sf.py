@@ -1,14 +1,17 @@
 import pandas as pd
 import os
+import warnings
 
 """
 To create code for 2 part process.
-1. To compare data between 2 file. 
-2. To filter data and compare between 2 file. 
+1. To compare data between database file and transaction file
+2. To filter data and compare between database file and transaction file
 
 """
 
 def main():
+    # Ignore warnings for stylesheets
+    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
     # get folder path
     folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf'
 
@@ -50,18 +53,18 @@ def main():
     merge_df = merge_df.dropna()
     merge_df.to_excel(os.path.join(folder_path, 'merged_df.xlsx'), index=False)
     
-    # to compare data data with stage = pledge with merchant ref from paydollar
-    condition = merge_df['Stage'] == 'Pledge'
-    merge_df_pledge = merge_df[condition]
+    # to compare data data with stage = pledge and Closed Lost with merchant ref from paydollar
+    condition = (merge_df['Stage'] == 'Pledged') | (merge_df['Stage'] == 'Closed Lost')
+    filtered_merge_df = merge_df[condition]
 
-    if merge_df_pledge.empty:
-        print('No data with Pledge Stage!')
+    if filtered_merge_df.empty:
+        print('No data need to be changed to Close Won!')
     else:
         # compare
-        condition2 = paydollar_column.isin(merge_df_pledge['External Reference Id'])
-        to_set_closewon_list = paydollar_column[condition2]
+        condition2 = paydollar_column.isin(filtered_merge_df['External Reference Id'])
+        to_set_closewon_list = paydollar_column[condition2].dropna()
 
-        print('Creating file with Pledge State')
+        print('Creating file with data to change stage to Close Won!')
         to_set_closewon_list.to_excel(os.path.join(folder_path, 'to_set_closewon.xlsx'), index=False)
 
     # compare the merge column and paydollar column 
@@ -75,7 +78,6 @@ def main():
     else:
         not_in_merge_df.to_excel(os.path.join(folder_path, 'transaction_not_created.xlsx'), index=False)
         print('A list of transaction not created has been created!')
-
 
 
     
