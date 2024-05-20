@@ -14,7 +14,7 @@ def task_compare_paydollarsf(folder_path):
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
     # get folder path
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf'
 
     for file in os.listdir(folder_path):
         # create donation column
