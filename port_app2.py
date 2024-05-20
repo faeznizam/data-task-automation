@@ -1,6 +1,6 @@
 # import module from subfolder
 from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
-from task_code import task_winbacknfp, task_compare_paydollar_sf
+from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning2
 
 
 import sys
@@ -37,6 +37,8 @@ def browse_folder():
             task_token.task_token_main(folder_path)
         elif selected_processing_option == "Compare Paydollar and SF":
             task_compare_paydollar_sf.task_compare_paydollarsf(folder_path)
+        elif selected_processing_option == "Data Cleaning":
+            task_data_cleaning2.task_data_cleaning_main(folder_path)
             
 # Custom logging handler to redirect log messages to a QTextEdit widget
 class TextEditHandler(logging.Handler):
@@ -75,6 +77,8 @@ if __name__ == '__main__':
     processing_options.addItem("Response Leads")
     processing_options.addItem("Token")
     processing_options.addItem("Compare Paydollar and SF")
+    processing_options.addItem("Data Cleaning")
+
     # Add more processing options as needed
     layout.addWidget(processing_options)
 
