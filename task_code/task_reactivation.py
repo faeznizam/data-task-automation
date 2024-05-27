@@ -1,5 +1,5 @@
 # import from sub file
-from dependencies import uts_file_format, copy_data_reactivation, task_reactivation_subfile, mobile_phone_handler, duplication_handler
+from .dependencies import uts_file_format, copy_data_reactivation, task_reactivation_subfile, mobile_phone_handler, duplication_handler
 
 # import from module
 from tabulate import tabulate
@@ -8,7 +8,6 @@ import warnings
 import logging
 import time
 import os
-
 
 
 # function to process file

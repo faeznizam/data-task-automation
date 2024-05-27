@@ -6,7 +6,7 @@ from tabulate import tabulate
 def main():
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\task_simplify_project\test_data\Apr'
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\TM Upgrade\2024\May'
 
     dfs = []
 
@@ -54,20 +54,6 @@ def main():
     print(tabulate(file_check, headers="keys", tablefmt="grid"))
 
     print('File has been checked and analyze!')
-
-
-
-         
-
-
-     
-
-
-
-
-
-
-            
 
 if __name__ == '__main__':
     main()

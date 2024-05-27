@@ -1,6 +1,7 @@
 # import module from subfolder
 from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
-from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning2
+from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning2, task_set_reject_burnt_status
+from task_code import task_upgrade_part2, task_upgrade_part1, task_reactivation
 
 
 import sys
@@ -28,9 +29,11 @@ def browse_folder():
         elif selected_processing_option == "TM Burnt":
             task_burnt.task_burnt_main(folder_path)
         elif selected_processing_option == "TM Reactivation":
-            pass
-        elif selected_processing_option == "TM Upgrade":
-            pass
+            task_reactivation.task_reactivation_main(folder_path)
+        elif selected_processing_option == "TM Upgrade: Prepare Files":
+            task_upgrade_part1.main(folder_path)
+        elif selected_processing_option == "TM Upgrade: Process Files":
+            task_upgrade_part2.task_upgrade_process_files_main(folder_path)
         elif selected_processing_option == "Response Leads":
             task_response_leads.task_response_leads_main(folder_path)
         elif selected_processing_option == "Token":
@@ -39,6 +42,8 @@ def browse_folder():
             task_compare_paydollar_sf.task_compare_paydollarsf(folder_path)
         elif selected_processing_option == "Data Cleaning":
             task_data_cleaning2.task_data_cleaning_main(folder_path)
+        elif selected_processing_option == "To Set Burnt and Reject":
+            task_set_reject_burnt_status.task_set_reject_burnt(folder_path)
             
 # Custom logging handler to redirect log messages to a QTextEdit widget
 class TextEditHandler(logging.Handler):
@@ -73,11 +78,13 @@ if __name__ == '__main__':
     processing_options.addItem("TM Month 2 - 6")
     processing_options.addItem("TM Burnt")
     processing_options.addItem("TM Reactivation")
-    processing_options.addItem("TM Upgrade")
+    processing_options.addItem("TM Upgrade: Prepare Files")
+    processing_options.addItem("TM Upgrade: Process Files")
     processing_options.addItem("Response Leads")
     processing_options.addItem("Token")
     processing_options.addItem("Compare Paydollar and SF")
     processing_options.addItem("Data Cleaning")
+    processing_options.addItem("To Set Burnt and Reject")
 
     # Add more processing options as needed
     layout.addWidget(processing_options)
