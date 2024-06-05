@@ -22,9 +22,11 @@ def task_compare_paydollarsf(folder_path):
             file_path = os.path.join(folder_path, file)
             donation_df = pd.read_excel(file_path, dtype={'External Donation Reference Id': str})
             donation_df.rename(columns={
-                'External Donation Reference Id' : 'External Reference Id'
+                'External Donation Reference Id' : 'External Reference Id',
+                'Donation 18 Digit Id' : 'Id', 
+                'Stage' : 'Old Stage'
             }, inplace=True)
-            column_list1 = ['External Reference Id', 'Stage', 'Close Date', 'Type']
+            column_list1 = ['External Reference Id', 'Old Stage', 'Close Date', 'Type', 'Id']
             donation_column = donation_df[column_list1]
             
 
@@ -33,9 +35,12 @@ def task_compare_paydollarsf(folder_path):
             file_path = os.path.join(folder_path, file)
             pledge_df = pd.read_excel(file_path, dtype={'External Pledge Reference Id' : str})
             pledge_df.rename(columns={
-                'External Pledge Reference Id' : 'External Reference Id'
+                'External Pledge Reference Id' : 'External Reference Id',
+                'MCO Donation 18 digit Id' : 'Id',
+                'Stage' : 'Old Stage'
+
             }, inplace=True)
-            column_list2 = ['External Reference Id', 'Stage', 'Close Date', 'Type']
+            column_list2 = ['External Reference Id', 'Old Stage', 'Close Date', 'Type', 'Id']
             pledge_column = pledge_df[column_list2]
             
 
@@ -47,7 +52,6 @@ def task_compare_paydollarsf(folder_path):
             filtered_paydollar_df = paydollar_df[~drop_row]
             paydollar_column = filtered_paydollar_df['Merchant Ref.']
             dedup_paydollar_column = paydollar_column.drop_duplicates()
-
             
     # merge donation and pledge to form a list to be compared with paydollar column 
     merge_df = pd.concat([donation_column, pledge_column], ignore_index=True)
@@ -55,15 +59,17 @@ def task_compare_paydollarsf(folder_path):
     merge_df.to_excel(os.path.join(folder_path, 'merged_df.xlsx'), index=False)
     
     # to compare data data with stage = pledge and Closed Lost with merchant ref from paydollar
-    condition = (merge_df['Stage'] == 'Pledged') | (merge_df['Stage'] == 'Closed Lost')
+    condition = (merge_df['Old Stage'] == 'Pledged') | (merge_df['Old Stage'] == 'Closed Lost')
     filtered_merge_df = merge_df[condition]
 
     if filtered_merge_df.empty:
         logging.info('No data need to be changed to Close Won!')
     else:
         # compare
-        condition2 = paydollar_column.isin(filtered_merge_df['External Reference Id'])
-        to_set_closewon_list = paydollar_column[condition2].dropna()
+        condition2 = filtered_merge_df['External Reference Id'].isin(paydollar_column)
+        to_set_closewon_list = filtered_merge_df[condition2]
+
+        to_set_closewon_list.loc[:,'StageName'] = 'Closed Won'
 
         logging.info('Creating file with data to change stage to Close Won!')
         to_set_closewon_list.to_excel(os.path.join(folder_path, 'to_set_closewon.xlsx'), index=False)
@@ -80,19 +86,6 @@ def task_compare_paydollarsf(folder_path):
         not_in_merge_df.to_excel(os.path.join(folder_path, 'transaction_not_created.xlsx'), index=False)
         logging.info('A list of transaction not created has been created!')
 
-
-    
-
-
-    
-
-  
-
-
-
-        
-    
-    
 
 
 
