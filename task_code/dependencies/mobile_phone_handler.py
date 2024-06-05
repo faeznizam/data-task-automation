@@ -1,9 +1,9 @@
 
 
-def process_mobile_numbers(df):
+def process_mobile_numbers(df, column):
     # remove empty space and hyphens
-    df['Mobile Phone'] = df['Mobile Phone'].str.replace(r'[A-Za-z +\-]', '', regex=True)
-    df['Mobile Phone'] = df['Mobile Phone'].apply(lambda x: reformat_mobile_number(x))
+    df[column] = df[column].str.replace(r'[A-Za-z +\-]', '', regex=True)
+    df[column] = df[column].apply(lambda x: reformat_mobile_number(x))
     
     return df
 

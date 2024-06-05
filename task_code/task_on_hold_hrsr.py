@@ -46,12 +46,12 @@ def ds_process(file_path, file):
 
    return df, modified_df
 
-def task_onhold_hrsr_main(folder_path):
+def task_onhold_hrsr_main():
    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
    logging.info('Processing On Hold HRSR Files ...')
 
-   #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_onhold\test_data\Apr'
+   folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onhold'
    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Hard and Soft Reject\2024\May - Copy'
 
    processed_file_info = []
@@ -73,7 +73,7 @@ def task_onhold_hrsr_main(folder_path):
                })
       
    logging.info('Processing Startek File Completed!')
-   print(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
+   logging.info(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
          
    # UTS 
    agency2 = 'UTS'
@@ -91,8 +91,8 @@ def task_onhold_hrsr_main(folder_path):
                   'Before Clean' : len(df), # count before clean
                   'After Clean' : len(modified_df), # count after clean
                })
-   print('Processing UTS File Completed!')
-   print(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
+   logging.info('Processing UTS File Completed!')
+   logging.info(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
 
    # DS
    agency3 = 'DS'
@@ -141,7 +141,7 @@ def task_onhold_hrsr_main(folder_path):
    output_filename = 'Card Pre Expiry Campaign.xlsx'
    output_filepath = os.path.join(ds_folder, output_filename)
    combine_df.to_excel(output_filepath, index=False)
-   print(f'{output_filename} has been save to folder')
+   logging.info(f'{output_filename} has been save to folder')
 
    processed_file_info.append({
       'File Name' : output_filename, # get file name
@@ -150,11 +150,14 @@ def task_onhold_hrsr_main(folder_path):
    })
 
 
-   print('Processing DS File Completed!')
-   print(f'{len(os.listdir(ds_folder))} files has been saved in folder')
+   logging.info('Processing DS File Completed!')
+   logging.info(f'{len(os.listdir(ds_folder))} files has been saved in folder')
 
 
    # print completion status
-   print('On Hold HRSR Files has been processed completely!')
+   logging.info('On Hold HRSR Files has been processed completely!')
    # print the list in table form
-   print(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
+   logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
+
+if __name__ == '__main__':
+   task_onhold_hrsr_main()
