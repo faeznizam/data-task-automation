@@ -72,7 +72,7 @@ def task_onhold_hrsr_main(folder_path):
                   'After Clean' : len(modified_df), # count after clean
                })
       
-   print('Processing Startek File Completed!')
+   logging.info('Processing Startek File Completed!')
    print(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
          
    # UTS 
