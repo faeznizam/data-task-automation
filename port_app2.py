@@ -14,7 +14,7 @@ def browse_folder():
     if folder_path:
 
         selected_processing_option = processing_options.currentText()
-        output_box.append("Selected processing option: " + selected_processing_option)
+        output_box.append("\nSelected processing option: " + selected_processing_option)
         
         if selected_processing_option == "TM One Time Conversion To Pledge":
             task_onetimeconversion.task_onetimeconversion_main(folder_path)

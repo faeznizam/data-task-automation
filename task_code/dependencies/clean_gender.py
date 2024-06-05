@@ -20,5 +20,6 @@ def gender_by_national_id(df):
 
 def rename_column(df):
     df.rename(columns = {'Gender' : 'sescore__Gender__c'}, inplace=True)
+    df.rename(columns = {'National ID' : 'sescore__National_Id__c'}, inplace=True)
 
     return df

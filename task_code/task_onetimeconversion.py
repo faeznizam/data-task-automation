@@ -25,6 +25,7 @@ def task_onetimeconversion_main(folder_path):
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
     warnings.filterwarnings("ignore", category=FutureWarning)
 
+    
     logging.info('Processing One Time Conversion To Pledge file...')
 
     # check if files already been processed

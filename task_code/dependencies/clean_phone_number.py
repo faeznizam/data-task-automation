@@ -14,7 +14,7 @@ def process_mobile_numbers(df):
   df['Updated Mobile'] =  df['Updated Mobile']
  
   # remove empty space and hyphens
-  df['Updated Mobile'] = df['Updated Mobile'].str.replace(r'[ +\-]', '', regex=True)
+  df['Updated Mobile'] = df['Updated Mobile'].str.replace(r'[A-Za-z +\-]', '', regex=True)
 
   # handle numbers starting with 60, 060, 600, 06001, 001, 1, 65
   df['Updated Mobile'] = df['Updated Mobile'].apply(lambda x: process_prefix(x))
@@ -28,26 +28,18 @@ def process_mobile_numbers(df):
   return df
 
 def process_prefix(x):
-  if x.startswith('601'):
-    return x[2:]
-  elif x.startswith('0601'):
-    return x[3:]
-  elif x.startswith('61'):
-    return x
-  elif x.startswith('6001'):
-    return x[3:]
-  elif x.startswith('06001'):
-    return x[4:]
-  elif x.startswith('001'):
-    return x[2:]
-  elif x.startswith('0001'):
-    return x[3:]
-  elif x.startswith('1') and len(x) in {9,10}:
-    return x
-  elif x.startswith('65'):
-    return x
-  else:
-    return ''
+    if x.startswith('601'):
+        return x[2:]
+    elif x.startswith(('0601', '6001', '06001')):
+        return x[3:]
+    elif x.startswith('1') and len(x) in {9, 10}:
+        return x
+    elif x.startswith(('01', '011')) and len(x) in {10, 11}:
+        return x
+    elif x.startswith(('61', '001', '0001', '65')):
+        return x
+    else:
+        return ''
 
 
 def rename_column(df):

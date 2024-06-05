@@ -1,4 +1,4 @@
-
+# create 3 column with new column name
 def clean_email_file(df):
 
     df = rename_column(df)
@@ -6,13 +6,26 @@ def clean_email_file(df):
     df['npe01__HomeEmail__c'] = df['Original Email'].apply(check_email)
     df['npe01__Preferred_Email__c'] = df['Original Email'].apply(check_email)
     df['npe01__WorkEmail__c'] = df['Original Email'].apply(check_email)
+    
     return df
 
 def check_email(email):
     if email.startswith('noemail'):
         return ''
-    else:
-        return email
+    
+    corrections = {
+        'gmail.cim': 'gmail.com',
+        'gmail.cm': 'gmail.com',
+        'gmail.cn': 'gmail.com',
+        'gmail.om': 'gmail.com'
+    }
+
+    for wrong, correct in corrections.items():
+        if wrong in email:
+            return email.replace(wrong, correct)
+        
+    return email
+    
     
 
 def rename_column(df):
