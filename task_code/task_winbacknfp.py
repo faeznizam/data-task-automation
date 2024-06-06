@@ -58,7 +58,7 @@ def task_winbacknfp_main(folder_path):
             # save df to modified in new variable
             updated_df = original_df
             # clean phone number
-            updated_df = mobile_phone_handler.process_mobile_numbers(updated_df)
+            updated_df = mobile_phone_handler.process_mobile_numbers(updated_df, 'Mobile Phone')
             
             # exclude invalid number rows and assign to new dataframe
             rows_to_exclude = mobile_phone_handler.delete_condition(updated_df, 'Mobile Phone')
