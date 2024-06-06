@@ -51,7 +51,7 @@ def task_burnt_main(folder_path):
                 updated_df = burnt_subfile.copy_data(updated_df, original_df)
 
                 # clean phone number in column
-                updated_df = mobile_phone_handler.process_mobile_numbers(updated_df)
+                updated_df = mobile_phone_handler.process_mobile_numbers(updated_df, 'Mobile Phone')
 
                 # exclude invalid number rows and assign to new dataframe
                 rows_to_exclude = mobile_phone_handler.delete_condition(updated_df, 'Mobile Phone')
