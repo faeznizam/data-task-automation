@@ -1,32 +1,53 @@
 # import module from folder
-from dependencies import process_startek_file
-from dependencies import startek_format
-from dependencies import process_uts
-from dependencies import process_ds
-from dependencies import mobile_phone_handler
-from dependencies import duplication_handler
+from .dependencies import process_startek_file
+from .dependencies import startek_format
+from .dependencies import process_uts
+from .dependencies import process_ds
+from .dependencies import mobile_phone_handler
+from .dependencies import duplication_handler
 
 # import dependencies
-import pandas as pd
-import os
-import warnings
 from tabulate import tabulate
+import pandas as pd
+import warnings
 import logging
+import time
+import os
 
 # function for different process
 def startek_process(file_path, file, folder_path):
-   df = pd.read_excel(file_path, dtype={'Post Code': str})
-   modified_df = startek_format.initialize_startek_format()
-   modified_df = startek_format.copy_data(modified_df, df)
-   modified_df = startek_format.populate_pkg_column(file, modified_df)
-   modified_df = mobile_phone_handler.process_mobile_numbers(modified_df, 'PH_CELL')
-   modified_df = duplication_handler.remove_duplicates(modified_df, 'PH_CELL')
-   new_file_name = process_startek_file.rename_startek_file(file)
-   process_startek_file.save_file(modified_df, new_file_name, folder_path)
 
-   return df, modified_df, new_file_name
+   # read file
+   original_df = pd.read_excel(file_path, dtype={'Post Code': str})
+
+   # initialize new dataframe with new format and move data to new dataframe
+   updated_df = startek_format.initialize_startek_format()
+   updated_df = startek_format.copy_data(updated_df, original_df)
+   updated_df = startek_format.populate_pkg_column(file, updated_df)
+
+   # clean phone number column
+   updated_df = mobile_phone_handler.process_mobile_numbers(updated_df, 'PH_CELL')
+
+   # exclude invalid number rows and assign to new dataframe
+   rows_to_exclude = mobile_phone_handler.delete_condition(updated_df, 'PH_CELL')
+   excluded_df = updated_df[rows_to_exclude]
+
+   # use opposite condition to filter the wanted number
+   rows_to_update = ~ rows_to_exclude
+   updated_df = updated_df[rows_to_update]
+
+   # delete duplicate based on phone number column
+   updated_df = duplication_handler.remove_duplicates(updated_df, 'PH_CELL')
+
+   # rename file and save file
+   new_file_name = process_startek_file.rename_startek_file(file)
+   process_startek_file.save_file(updated_df, new_file_name, folder_path)
+
+   return original_df, updated_df, new_file_name, excluded_df
 
 def uts_process(file_path, file, folder_path):
+
+   # read file
    df = process_uts.read_file(file_path)
    modified_df = df
    modified_df = process_uts.populate_campaign(modified_df, file)
@@ -46,15 +67,22 @@ def ds_process(file_path, file):
 
    return df, modified_df
 
-def task_onhold_hrsr_main():
+def task_onhold_hrsr_main(folder_path):
+   # add start time to record code runtime
+   start_time = time.time()
+
+   # ignore warning
    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
    logging.info('Processing On Hold HRSR Files ...')
 
-   folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onhold'
+   #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onhold'
    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Hard and Soft Reject\2024\May - Copy'
 
    processed_file_info = []
+   deleted_list = []
+   deleted_list_startek = []
+
    # startek
    agency = 'Startek'
    agency_folder = os.path.join(folder_path, agency)
@@ -65,15 +93,32 @@ def task_onhold_hrsr_main():
          for file in file_list:
             if 'New Onhold' in file:
                file_path = os.path.join(sub_folder_path, file)
-               df, modified_df, new_file_name = startek_process(file_path, file, sub_folder_path)
+               original_df, updated_df, new_file_name, excluded_df = startek_process(file_path, file, sub_folder_path)
+
+               # check if the df is not empty then append to deleted_list
+               if not excluded_df.empty:
+                  # add file name so that I know where the row belongs
+                  excluded_df['File Name'] = new_file_name
+                  deleted_list_startek.append(excluded_df)        
+
                processed_file_info.append({
                   'File Name' : new_file_name, # get file name
-                  'Before Clean' : len(df), # count before clean
-                  'After Clean' : len(modified_df), # count after clean
+                  'Before Clean' : len(original_df), # count before clean
+                  'After Clean' : len(updated_df), # count after clean
                })
-      
-   logging.info('Processing Startek File Completed!')
-   logging.info(f'{len(os.listdir(sub_folder_path))} files has been saved in folder')
+
+   # combine all df that has been append to list and save the file in excel
+   # empty list gave out False boolean
+   if deleted_list:
+      final_deleted_df = pd.concat(deleted_list, ignore_index=True)
+      final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list_startek.xlsx'), index=False)
+   else:
+      logging.info('Deleted list was not created since there is no data!')# combine all df that has been append to list and save the file in excel
+
+   # print process status and analysis
+   logging.info('Process completed!. Files has been saved in selected folder.')
+   
+   
          
    # UTS 
    agency2 = 'UTS'
@@ -159,5 +204,8 @@ def task_onhold_hrsr_main():
    # print the list in table form
    logging.info(tabulate(processed_file_info, headers="keys", tablefmt="grid"))
 
-if __name__ == '__main__':
-   task_onhold_hrsr_main()
+   # get end time for runtime and print
+   end_time = time.time()
+   code_runtime = end_time - start_time
+   logging.info('Processing Time: {:2f} seconds'.format(code_runtime))
+
