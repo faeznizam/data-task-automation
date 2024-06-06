@@ -1,7 +1,7 @@
 # import module from subfolder
 from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
 from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning2, task_set_reject_burnt_status
-from task_code import task_upgrade_part2, task_upgrade_part1, task_reactivation
+from task_code import task_upgrade_part2, task_upgrade_part1, task_reactivation, task_on_hold_hrsr
 
 
 import sys
@@ -19,7 +19,7 @@ def browse_folder():
         if selected_processing_option == "TM One Time Conversion To Pledge":
             task_onetimeconversion.task_onetimeconversion_main(folder_path)
         elif selected_processing_option == "TM On Hold Hard and Soft Reject":
-            pass
+            task_on_hold_hrsr.task_onhold_hrsr_main(folder_path)
         elif selected_processing_option == "TM Winback No First Payment":
             task_winbacknfp.task_winbacknfp_main(folder_path)
         elif selected_processing_option == "TM Winback On Hold":
