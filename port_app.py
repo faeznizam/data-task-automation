@@ -1,89 +1,120 @@
-# 1. select folder to process file
-# 2. process file
-# 3. completion message
-# 4. open folder
+# import module from subfolder
+from task_code import task_onetimeconversion, task_month2_6, task_burnt, task_response_leads, task_token
+from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning2, task_set_reject_burnt_status
+from task_code import task_upgrade_part2, task_upgrade_part1, task_reactivation, task_on_hold_hrsr
 
-# import python module
-import tkinter as tk
-import tkinter.ttk as ttk
-from tkinter import filedialog
+
 import sys
-import io
-
-# import .py file
-from task_token import token_mainfile
-from task_response_leads import task_response_leads
-from task_onetimeconversion import task_tm_ot_conv_to_pledge
-from task_burnt import task_tm_burnt
-from task_onhold import task_on_hold_hrsr
-from task_reactivation import task_reactivation_main
-from PortableApp.task_upgrade import task_upgrade_part2
-from task_winbackonhold import task_winback_onhold
-from task_winback_nofirstpayment import task_winbacknfp
-
-def run_process(folder_path, selected_process):
-    process_function = {
-        "Token" : token_mainfile.main, 
-        "Response Leads" : task_response_leads.main, 
-        "One Time Conversion To Pledge" : task_tm_ot_conv_to_pledge.main,
-        "Burnt" : task_tm_burnt.main, 
-        "On Hold" : task_on_hold_hrsr.main,
-        "Reactivation": task_reactivation_main.main,
-        "Upgrade" : task_upgrade_part2.main, 
-        "Winback On Hold" : task_winback_onhold.main, 
-        "Winback No First Payment" : task_winbacknfp.main
-
-    }
-
-    if selected_process in process_function:
-        output_stream = io.StringIO()
-        sys.stdout = output_stream
-        process_function[selected_process](folder_path)
-        output = output_stream.getvalue()
-        sys.stdout = sys.__stdout__
-        output_text.insert(tk.END, output)
-    else:
-        print("Selected process not found.")
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextEdit, QFileDialog, QComboBox
+import logging
 
 
-
-def select_folder():
-    folder_path = filedialog.askdirectory()
+def browse_folder():
+    folder_path = QFileDialog.getExistingDirectory(window, 'Select Folder', '.') 
     if folder_path:
-        output_text.insert(tk.END, f"Selected folder: {folder_path}\n")
-        selected_process = process_var.get()
-        run_process(folder_path, selected_process)
 
-root = tk.Tk()
-root.title("Task Simplifier")
-root.geometry("600x400")
-root.config(bg="#121212")
+        selected_processing_option = processing_options.currentText()
+        output_box.append("\nSelected processing option: " + selected_processing_option)
+        
+        if selected_processing_option == "TM One Time Conversion To Pledge":
+            task_onetimeconversion.task_onetimeconversion_main(folder_path)
+        elif selected_processing_option == "TM On Hold Hard and Soft Reject":
+            task_on_hold_hrsr.task_onhold_hrsr_main(folder_path)
+        elif selected_processing_option == "TM Winback No First Payment":
+            task_winbacknfp.task_winbacknfp_main(folder_path)
+        elif selected_processing_option == "TM Winback On Hold":
+            pass
+        elif selected_processing_option == "TM Month 2 - 6":
+            task_month2_6.task_month2_to_6_main(folder_path)
+        elif selected_processing_option == "TM Burnt":
+            task_burnt.task_burnt_main(folder_path)
+        elif selected_processing_option == "TM Reactivation":
+            task_reactivation.task_reactivation_main(folder_path)
+        elif selected_processing_option == "TM Upgrade: Prepare Files":
+            task_upgrade_part1.main(folder_path)
+        elif selected_processing_option == "TM Upgrade: Process Files":
+            task_upgrade_part2.task_upgrade_process_files_main(folder_path)
+        elif selected_processing_option == "Response Leads":
+            task_response_leads.task_response_leads_main(folder_path)
+        elif selected_processing_option == "Token":
+            task_token.task_token_main(folder_path)
+        elif selected_processing_option == "Compare Paydollar and SF":
+            task_compare_paydollar_sf.task_compare_paydollarsf(folder_path)
+        elif selected_processing_option == "Data Cleaning":
+            task_data_cleaning2.task_data_cleaning_main(folder_path)
+        elif selected_processing_option == "To Set Burnt and Reject":
+            task_set_reject_burnt_status.task_set_reject_burnt(folder_path)
+            
+# Custom logging handler to redirect log messages to a QTextEdit widget
+class TextEditHandler(logging.Handler):
+    def __init__(self, widget):
+        super().__init__()
+        self.widget = widget
 
-# Create a style to customize the dropdown menu
-style = ttk.Style()
-style.configure('Custom.TCombobox', width=10)
+    def emit(self, record):
+        msg = self.format(record)
+        self.widget.append(msg)
 
-# Create a frame for widgets
-frame = tk.Frame(root, bg="#121212")
-frame.pack(padx=10, pady=10, fill=tk.X)
+if __name__ == '__main__': 
+    app = QApplication(sys.argv)
+    window = QWidget()
 
-# Create the dropdown menu
-process_var = tk.StringVar()
-processes = ["Token", "Response Leads","One Time Conversion To Pledge", "Burnt", "On Hold", "Reactivation"
-             "Winback On Hold", "Upgrade", "Winback No First Payment"]
+    # Set window title
+    window.setWindowTitle('Task Simplifier App')
 
-# Get max length for dropdown by using max for dropdown text
-max_text_length = max(len(process) for process in processes)
+    # Set position and size of window
+    window.setGeometry(100, 100, 600, 400)
 
-process_dropdown = ttk.Combobox(frame, textvariable=process_var, values=processes, style='Custom.TCombobox', width=max_text_length)
-process_dropdown.pack(side=tk.LEFT, padx=(0, 5))
+    # Create a layout
+    layout = QVBoxLayout()
 
-# Create the select folder button
-select_button = tk.Button(frame, text="Browse", command=select_folder)
-select_button.pack(side=tk.RIGHT)
+    # Create a QComboBox for selecting processing options
+    processing_options = QComboBox()
+    processing_options.addItem("Select Process To Start")
+    processing_options.addItem("TM One Time Conversion To Pledge")
+    processing_options.addItem("TM On Hold Hard and Soft Reject")
+    processing_options.addItem("TM Winback No First Payment")
+    processing_options.addItem("TM Winback On Hold")
+    processing_options.addItem("TM Month 2 - 6")
+    processing_options.addItem("TM Burnt")
+    processing_options.addItem("TM Reactivation")
+    processing_options.addItem("TM Upgrade: Prepare Files")
+    processing_options.addItem("TM Upgrade: Process Files")
+    processing_options.addItem("Response Leads")
+    processing_options.addItem("Token")
+    processing_options.addItem("Compare Paydollar and SF")
+    processing_options.addItem("Data Cleaning")
+    processing_options.addItem("To Set Burnt and Reject")
 
-# Output text
-output_text = tk.Text(root, height=20, width=70, bg="#212121", fg="#FFFFFF")
-output_text.pack(padx=10, pady=10)
+    # Add more processing options as needed
+    layout.addWidget(processing_options)
 
-root.mainloop()
+    # Create a button for browsing folder
+    browse_button = QPushButton('Browse Folder')
+    browse_button.clicked.connect(browse_folder)
+
+    # Add the button to the layout
+    layout.addWidget(browse_button)
+
+    # Create a QTextEdit widget for displaying output
+    output_box = QTextEdit()
+    output_box.setReadOnly(True)  # Make the output box read-only
+    layout.addWidget(output_box)
+
+    # Set the layout of the window
+    window.setLayout(layout)
+
+     # Custom logging handler to redirect log messages to a QTextEdit widget
+    handler = TextEditHandler(output_box)
+    handler.setFormatter(logging.Formatter('%(message)s'))
+
+    # Get the root logger and add the custom handler
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    root_logger.addHandler(handler)
+
+    # Display window on screen
+    window.show()
+
+    # Enter event loop
+    sys.exit(app.exec_())
