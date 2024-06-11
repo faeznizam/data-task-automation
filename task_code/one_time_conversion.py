@@ -1,15 +1,16 @@
 # import module
-from dependencies import process_onetime_conversion, helper_deletion, helper_analyze
+from .dependencies import process_onetime_conversion, helper_deletion, helper_analyze
 
 # import dependency
 import warnings
+import logging
 import os
 
-def one_time_conversion_flow():
+def one_time_conversion_flow(folder_path):
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onetimeconversion'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onetimeconversion'
 
     # check file
     if any('TMOC' in file for file in os.listdir(folder_path)):
@@ -38,8 +39,5 @@ def one_time_conversion_flow():
             # create analysis table
             helper_analyze.analysis_table(processed_file_info)
 
-            print('Process completed.')
-
-
-if __name__ == '__main__':
-    one_time_conversion_flow()
+        
+        logging.info('Process Completed.')
