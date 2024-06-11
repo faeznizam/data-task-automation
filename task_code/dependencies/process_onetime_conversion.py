@@ -1,12 +1,11 @@
-# import module
-from datetime import datetime
-from tabulate import tabulate
-import pandas as pd
-import os
-
+# import from local module
 from .mobile_phone_handler import process_mobile_numbers, delete_condition
 from .duplication_handler import remove_duplicates
 
+# import library
+from datetime import datetime
+import pandas as pd
+import os
 
 def rename_file():
     current_date = datetime.now()
