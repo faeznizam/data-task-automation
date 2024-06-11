@@ -42,11 +42,9 @@ def process_file(file, folder_path, date_format, clean_function):
     logging.info(f'{new_file_name} has been created. ')
     
 def task_data_cleaning_main(folder_path):
-
-    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_data_cleaning'
-
     # ignore warning
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
+
     # remove timestamp in file name
     clean_file_name.remove_timestamp(folder_path)
 
@@ -69,8 +67,3 @@ def task_data_cleaning_main(folder_path):
         
 
 
-"""
-if __name__ == '__main__':
-    task_data_cleaning_main()
-
-"""
