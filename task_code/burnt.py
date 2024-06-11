@@ -1,15 +1,16 @@
 # import module from folder
-from dependencies import process_burnt, helper_analyze, helper_deletion
+from .dependencies import process_burnt, helper_analyze, helper_deletion
 
 # import dependency
 import warnings
+import logging
 import os
 
-def burnt_flow():
+def burnt_flow(folder_path):
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_burnt'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_burnt'
     
     # check if files has been processed
     if any('TMBN' in file for file in os.listdir(folder_path)):
@@ -38,10 +39,9 @@ def burnt_flow():
             # create analysis table
             helper_analyze.analysis_table(processed_file_info)
 
-            print('Process completed.')
+        logging.info('Process Completed.')
 
-if __name__ == '__main__':
-    burnt_flow()
+
     
 
     
