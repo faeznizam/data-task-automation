@@ -1,4 +1,4 @@
-# import module
+# import from local module
 from .dependencies import process_onetime_conversion, helper_deletion, helper_analyze
 
 # import dependency

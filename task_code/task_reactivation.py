@@ -1,5 +1,5 @@
 # import from sub file
-from .dependencies import uts_file_format, copy_data_reactivation, task_reactivation_subfile, mobile_phone_handler, duplication_handler
+from .dependencies import helper_for_uts_format, copy_data_reactivation, task_reactivation_subfile, mobile_phone_handler, duplication_handler
 
 # import from module
 from tabulate import tabulate
@@ -20,7 +20,7 @@ def process_files(file_path):
     updated_df = original_df
 
     # build df with uts column format
-    updated_df = uts_file_format.initalize_uts_file_format()
+    updated_df = helper_for_uts_format.create_uts_table()
 
     # copy data from old format to new format
     updated_df = copy_data_reactivation.copy_data_reactivation(updated_df, original_df)
