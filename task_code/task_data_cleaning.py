@@ -2,7 +2,7 @@
 
 from .dependencies import (
     clean_gender,clean_icnumber, clean_birthdate, clean_email, clean_ethnic, 
-    clean_phone_number, clean_file_name, date_handler
+    clean_phone_number, clean_file_name, helper_date
     )
 
 # import from module
@@ -34,7 +34,7 @@ def process_file(file, folder_path, date_format, clean_function):
     df['Date'] = date_format
 
     # change date format in one of the column
-    df = date_handler.convert_date_format(df)
+    df = helper_date.convert_date_format(df)
     new_file_name = rename_file(file, date_format)
     new_file_path = create_file_path(folder_path, new_file_name)
     df.to_excel(new_file_path, index=False)
@@ -49,7 +49,7 @@ def task_data_cleaning_main(folder_path):
     clean_file_name.remove_timestamp(folder_path)
 
     # get current date in YYYY-MM-DD format
-    date_format = date_handler.current_date_format()
+    date_format = helper_date.current_date_format()
 
     file_cleaning_map = {
         'Donor With Invalid Email.xlsx' : clean_email.clean_email_file, 
