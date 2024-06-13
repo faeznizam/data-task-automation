@@ -3,7 +3,7 @@ import warnings
 import os
 import logging
 
-from .dependencies import date_handler
+from .dependencies import helper_date
 from .dependencies import process_set_reject_burnt
 
 def task_set_reject_burnt(folder_path):
@@ -22,7 +22,7 @@ def task_set_reject_burnt(folder_path):
         for file in os.listdir(folder_path):
             file_path = os.path.join(folder_path, file)
 
-            date = date_handler.current_date_format()
+            date = helper_date.current_date_format()
 
             if 'MCO To Burnt Report' in file:
                 process_set_reject_burnt.process_burnt(file_path, folder_path, file, date)
