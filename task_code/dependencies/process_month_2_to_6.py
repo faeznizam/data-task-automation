@@ -1,5 +1,5 @@
 # import module from folder
-from .duplication_handler import remove_duplicates
+from .helper_duplication import remove_duplicates
 
 # import dependencies
 import pandas as pd

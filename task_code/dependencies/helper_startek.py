@@ -1,7 +1,6 @@
 import pandas as pd
 
-
-def initialize_startek_format():
+def create_startek_table():
     startek_format = {
         'DONOR': [],
         'TITLE': [],
@@ -60,10 +59,10 @@ def initialize_startek_format():
 
     return pd.DataFrame(startek_format)
 
-df_strtk = initialize_startek_format()
+df_strtk = create_startek_table()
 
 
-def copy_data(df_strtk, df_file):
+def copy_data_startek(df_strtk, df_file):
   df_strtk['DONOR'] = df_file['Donor Id']
   df_strtk['TITLE'] = df_file['Title']
   df_strtk['FNAME'] = df_file['First Name']

@@ -1,8 +1,6 @@
 # import from local module
 from .helper_mobile_phone import process_mobile_numbers, delete_condition
 from .helper_duplication import remove_duplicates
-from .helper_for_uts_format import create_uts_table
-from .helper_upgrade import copy_data_upgrade
 
 # import from library
 from datetime import datetime
@@ -10,25 +8,19 @@ import pandas as pd
 import os
 
 def rename_file(file):
-    # get current date
     current_date = datetime.now() # get current date
     date_format = current_date.strftime('%Y%m%d') # reformat date
 
-    prefix = file[:-25]
-    return f'{prefix}_{date_format}.xlsx'
+    return f'TM_{file[8:11]}{file[12:15]}_{file[16:18]}_OH{file[19:21]}_{date_format}.xlsx'
 
-def process_file(folder_path, file):
-    # get file path based on join folder path and file name
-    file_path = os.path.join(folder_path, file)
+def process_file(subfolder_path, file):
 
-    # read excel file
-    original_df = pd.read_excel(file_path)
+    file_path = os.path.join(subfolder_path, file)
 
-    # run function
-    updated_df = create_uts_table()
-    updated_df = copy_data_upgrade(updated_df, original_df)
+    original_df = pd.read_excel(file_path, dtype={'Post Code': str})
 
-    # clean phone number in column
+    updated_df = original_df
+
     updated_df = process_mobile_numbers(updated_df, 'Mobile Phone')
 
     # exclude invalid number rows and assign to new dataframe
@@ -39,12 +31,12 @@ def process_file(folder_path, file):
     rows_to_update = ~ rows_to_exclude
     updated_df = updated_df[rows_to_update]
 
-    # delete duplicate based on mobile phone column
     updated_df = remove_duplicates(updated_df, 'Mobile Phone')
 
-    # rename the file, build new file path, save file
     new_file_name = rename_file(file)
-    new_file_path = os.path.join(folder_path, new_file_name)
+    new_file_path = os.path.join(subfolder_path, new_file_name)
+
     updated_df.to_excel(new_file_path, index=False)
 
     return original_df, updated_df, excluded_df, new_file_name
+

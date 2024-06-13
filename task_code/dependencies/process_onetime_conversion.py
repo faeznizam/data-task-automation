@@ -1,6 +1,6 @@
 # import from local module
-from .mobile_phone_handler import process_mobile_numbers, delete_condition
-from .duplication_handler import remove_duplicates
+from .helper_mobile_phone import process_mobile_numbers, delete_condition
+from .helper_duplication import remove_duplicates
 
 # import library
 from datetime import datetime

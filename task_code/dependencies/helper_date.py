@@ -13,3 +13,8 @@ def convert_date_format(df):
     df['Created Date'] = df['Created Date'].dt.strftime('%Y-%m-%d')
 
     return df
+
+# create date in format of YYYYMMDD
+def current_date_format_YYYYMMDD():
+    current_date = datetime.now() # get current date
+    return current_date.strftime('%Y%m%d') # reformat date

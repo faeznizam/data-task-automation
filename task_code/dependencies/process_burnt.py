@@ -4,9 +4,9 @@ from tabulate import tabulate
 import pandas as pd
 import os
 
-from .mobile_phone_handler import process_mobile_numbers, delete_condition
+from .helper_mobile_phone import process_mobile_numbers, delete_condition
 from .helper_burnt import copy_data_to_new_table
-from .duplication_handler import remove_duplicates
+from .helper_duplication import remove_duplicates
 from .helper_for_uts_format import create_uts_table
 
 
