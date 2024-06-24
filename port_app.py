@@ -1,7 +1,7 @@
 # import module from subfolder
-from task_code import month_2_to_6, one_time_conversion, burnt, task_response_leads, task_token
-from task_code import task_winbacknfp, task_compare_paydollar_sf, task_data_cleaning, task_set_reject_burnt_status
-from task_code import task_upgrade_part2, task_upgrade_part1, task_reactivation, task_on_hold_hrsr
+from task_code import compare_paydollar_sf, month_2_to_6, one_time_conversion, burnt, onhold, reactivation, response_leads, task_token, winback_nfp, winback_onhold
+from task_code import task_data_cleaning, task_set_reject_burnt_status
+from task_code import upgrade_part1, upgrade_part2
 
 
 import sys
@@ -27,30 +27,43 @@ def browse_folder():
         
         if selected_processing_option == "TM One Time Conversion To Pledge":
             one_time_conversion.one_time_conversion_flow(folder_path)
+
         elif selected_processing_option == "TM On Hold Hard and Soft Reject":
-            task_on_hold_hrsr.task_onhold_hrsr_main(folder_path)
+            onhold.onhold_flow(folder_path)
+
         elif selected_processing_option == "TM Winback No First Payment":
-            task_winbacknfp.task_winbacknfp_main(folder_path)
+            winback_nfp.winback_nfp_flow(folder_path)
+
         elif selected_processing_option == "TM Winback On Hold":
-            pass
+            winback_onhold.winback_onhold_flow(folder_path)
+
         elif selected_processing_option == "TM Month 2 - 6":
             month_2_to_6.month_2_to_6_flow(folder_path)
+
         elif selected_processing_option == "TM Burnt":
             burnt.burnt_flow(folder_path)
+
         elif selected_processing_option == "TM Reactivation":
-            task_reactivation.task_reactivation_main(folder_path)
+            reactivation.reactivation_flow(folder_path)
+
         elif selected_processing_option == "TM Upgrade: Prepare Files":
-            task_upgrade_part1.main(folder_path)
+            upgrade_part1.task_upgrade_part1_flow(folder_path)
+
         elif selected_processing_option == "TM Upgrade: Process Files":
-            task_upgrade_part2.task_upgrade_process_files_main(folder_path)
+            upgrade_part2.upgrade_part2_flow(folder_path)
+
         elif selected_processing_option == "Response Leads":
-            task_response_leads.task_response_leads_main(folder_path)
+            response_leads.response_leads_flow(folder_path)
+
         elif selected_processing_option == "Token":
             task_token.task_token_main(folder_path)
+
         elif selected_processing_option == "Compare Paydollar and SF":
-            task_compare_paydollar_sf.task_compare_paydollarsf(folder_path)
+            compare_paydollar_sf.task_compare_paydollarsf(folder_path)
+
         elif selected_processing_option == "Data Cleaning":
             task_data_cleaning.task_data_cleaning_main(folder_path)
+            
         elif selected_processing_option == "To Set Burnt and Reject":
             task_set_reject_burnt_status.task_set_reject_burnt(folder_path)
 
