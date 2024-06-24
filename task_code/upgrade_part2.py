@@ -18,7 +18,9 @@ def upgrade_part2_flow(folder_path):
 
     print(f'IH : {file_count_IH}, IP : {file_count_IP}, SG : {file_count_SG}')
     
-    if file_count_IP == 1:
+    if file_count_IP != 1:
+        logging.info('Files already been processed! Please check the folder')
+    else: 
 
         # initialize list to get data
         processed_file_info = []

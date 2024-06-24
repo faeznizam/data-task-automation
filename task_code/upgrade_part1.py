@@ -1,3 +1,4 @@
+from .dependencies import helper_analyze
 
 from tabulate import tabulate
 import pandas as pd
@@ -14,14 +15,15 @@ The code should check for these things:
 3. Check for blank row in Card Expiry and Card Number column in In House Files. 
 
 """
+def ignore_warning():
+    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
+
 
 def task_upgrade_part1_flow(folder_path):
 
-    # ignore warning
-    warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
+    ignore_warning()
 
-    # initiate list to append all the df for SG files
-    dfs = []
+    combine_sg_data_list = []
 
     for file in os.listdir(folder_path):
         if 'SG' in file:
@@ -29,10 +31,10 @@ def task_upgrade_part1_flow(folder_path):
 
             df = pd.read_excel(file_path)
 
-            dfs.append(df)
+            combine_sg_data_list.append(df)
 
     # merge all df into one df
-    merged_df = pd.concat(dfs, ignore_index=True)
+    merged_df = pd.concat(combine_sg_data_list, ignore_index=True)
 
     # filter with conditions
     merged_df = merged_df[merged_df['Rollup Summary: Ttl # of Pledges'] == 1]
@@ -69,8 +71,7 @@ def task_upgrade_part1_flow(folder_path):
                 'Blank Card Expiry': card_expiry_blank_count
             })
 
-    logging.info('\n')
-    logging.info(tabulate(file_check, headers="keys", tablefmt="html"))
+    helper_analyze.analysis_table(file_check)
     logging.info('Process Completed.')
 
 
