@@ -3,28 +3,19 @@ from task_code import compare_paydollar_sf, month_2_to_6, one_time_conversion, b
 from task_code import task_data_cleaning, task_set_reject_burnt_status
 from task_code import upgrade_part1, upgrade_part2
 
-
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextEdit, QFileDialog, QComboBox, QTableWidget, QTableWidgetItem, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextEdit, QFileDialog, QComboBox, QProgressBar
 import logging
-
-processed_file_info = []
-
-def get_row_count(original_df, updated_df, new_file_name, processed_file_info):
-    # Append row count for before and after to list in dictionary.
-    processed_file_info.append({
-        'File Name': new_file_name,
-        'Before Clean': len(original_df),
-        'After Clean': len(updated_df),
-    })
 
 def browse_folder():
     folder_path = QFileDialog.getExistingDirectory(window, 'Select Folder', '.') 
     if folder_path:
-
         selected_processing_option = processing_options.currentText()
         output_box.append("\nSelected processing option: " + selected_processing_option)
-        
+
+        # Reset progress bar to 0
+        progress_bar.setValue(0)
+
         if selected_processing_option == "TM One Time Conversion To Pledge":
             one_time_conversion.one_time_conversion_flow(folder_path)
 
@@ -67,9 +58,10 @@ def browse_folder():
         elif selected_processing_option == "To Set Burnt and Reject":
             task_set_reject_burnt_status.task_set_reject_burnt(folder_path)
 
-        # Update the table with new processed file info
-        update_table(processed_file_info)
-            
+        # Simulate progress
+        for i in range(101):
+            progress_bar.setValue(i)
+
 # Custom logging handler to redirect log messages to a QTextEdit widget
 class TextEditHandler(logging.Handler):
     def __init__(self, widget):
@@ -79,17 +71,6 @@ class TextEditHandler(logging.Handler):
     def emit(self, record):
         msg = self.format(record)
         self.widget.append(msg)
-
-def update_table(processed_file_info):
-    headers = ["File Name", "Before Clean", "After Clean"]
-    table_widget.setRowCount(len(processed_file_info))
-    table_widget.setColumnCount(len(headers))
-    table_widget.setHorizontalHeaderLabels(headers)
-
-    for row_idx, info in enumerate(processed_file_info):
-        table_widget.setItem(row_idx, 0, QTableWidgetItem(info['File Name']))
-        table_widget.setItem(row_idx, 1, QTableWidgetItem(str(info['Before Clean'])))
-        table_widget.setItem(row_idx, 2, QTableWidgetItem(str(info['After Clean'])))
 
 if __name__ == '__main__': 
     app = QApplication(sys.argv)
@@ -132,19 +113,19 @@ if __name__ == '__main__':
     # Add the button to the layout
     layout.addWidget(browse_button)
 
+    # Create a QProgressBar widget for displaying progress
+    progress_bar = QProgressBar()
+    layout.addWidget(progress_bar)
+
     # Create a QTextEdit widget for displaying output
     output_box = QTextEdit()
     output_box.setReadOnly(True)  # Make the output box read-only
     layout.addWidget(output_box)
 
-    # Create a QTableWidget for displaying processed file info
-    table_widget = QTableWidget()
-    layout.addWidget(table_widget)
-
     # Set the layout of the window
     window.setLayout(layout)
 
-     # Custom logging handler to redirect log messages to a QTextEdit widget
+    # Custom logging handler to redirect log messages to a QTextEdit widget
     handler = TextEditHandler(output_box)
     handler.setFormatter(logging.Formatter('%(message)s'))
 
@@ -152,6 +133,55 @@ if __name__ == '__main__':
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
     root_logger.addHandler(handler)
+
+    # Set the dark mode stylesheet
+    dark_stylesheet = """
+    QWidget {
+        background-color: #2e2e2e;
+        color: #ffffff;
+    }
+    QComboBox, QTextEdit, QProgressBar {
+        background-color: #3c3c3c;
+        border: 1px solid #555555;
+        color: #ffffff;
+    }
+    QComboBox QAbstractItemView {
+        background-color: #3c3c3c;
+        color: #ffffff;
+        selection-background-color: #555555;
+    }
+    QComboBox::drop-down {
+        border: 0px;
+    }
+    QComboBox::down-arrow {
+        image: url(down_arrow.png); /* Customize as needed */
+        width: 14px;
+        height: 14px;
+    }
+    QPushButton {
+        background-color: #d9534f;  /* Red color for button */
+        border: 1px solid #888888;
+        padding: 5px;
+        border-radius: 4px;
+        color: #ffffff;
+    }
+    QPushButton:hover {
+        background-color: #c9302c;  /* Darker red on hover */
+    }
+    QTextEdit {
+        border: 1px solid #555555;
+        border-radius: 4px;
+    }
+    QProgressBar {
+        text-align: center;
+    }
+    QProgressBar::chunk {
+        background-color: #05B8CC;
+        width: 20px;
+    }
+    """
+
+    app.setStyleSheet(dark_stylesheet)
 
     # Display window on screen
     window.show()
