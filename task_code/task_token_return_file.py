@@ -60,9 +60,4 @@ def token_return_main(folder_path):
             process_file(folder_path, filename)
     logging.info('Process complete')
 
-"""
-if __name__ == '__main__':
-    folder_path = r'C:\Users\mfmohammad\UNICEF\MYS-CloudShare - PFP - Business Intelligence\Token\2024\June 2024\250624'
-    token_return_main(folder_path)
-"""
 
