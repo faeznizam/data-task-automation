@@ -14,7 +14,7 @@ def one_time_conversion_flow(folder_path):
 
     # check file
     if any('TMOC' in file for file in os.listdir(folder_path)):
-        print('Files already been processed! Please check the folder') 
+        logging.info('Files already been processed! Please check the folder')
     else:
         # initialize list to get data
         deleted_list = []
