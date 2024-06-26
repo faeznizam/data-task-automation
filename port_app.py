@@ -1,7 +1,7 @@
 # import module from subfolder
 from task_code import compare_paydollar_sf, month_2_to_6, one_time_conversion, burnt, onhold, reactivation, response_leads, task_token, winback_nfp, winback_onhold
 from task_code import task_data_cleaning, task_set_reject_burnt_status
-from task_code import upgrade_part1, upgrade_part2
+from task_code import upgrade_part1, upgrade_part2, task_token_return_file
 
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextEdit, QFileDialog, QComboBox, QProgressBar
@@ -46,8 +46,11 @@ def browse_folder():
         elif selected_processing_option == "Response Leads":
             response_leads.response_leads_flow(folder_path)
 
-        elif selected_processing_option == "Token":
+        elif selected_processing_option == "Token: Send File":
             task_token.task_token_main(folder_path)
+        
+        elif selected_processing_option == "Token: Return File":
+            task_token_return_file.token_return_main(folder_path)
 
         elif selected_processing_option == "Compare Paydollar and SF":
             compare_paydollar_sf.task_compare_paydollarsf(folder_path)
@@ -98,7 +101,8 @@ if __name__ == '__main__':
     processing_options.addItem("TM Upgrade: Prepare Files")
     processing_options.addItem("TM Upgrade: Process Files")
     processing_options.addItem("Response Leads")
-    processing_options.addItem("Token")
+    processing_options.addItem("Token: Send File")
+    processing_options.addItem("Token: Return File")
     processing_options.addItem("Compare Paydollar and SF")
     processing_options.addItem("Data Cleaning")
     processing_options.addItem("To Set Burnt and Reject")
