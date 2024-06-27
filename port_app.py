@@ -1,7 +1,7 @@
 # import module from subfolder
 from task_code import compare_paydollar_sf, month_2_to_6, one_time_conversion, burnt, onhold, reactivation, response_leads, task_token, winback_nfp, winback_onhold
 from task_code import task_data_cleaning, task_set_reject_burnt_status
-from task_code import upgrade_part1, upgrade_part2, task_token_return_file
+from task_code import upgrade_part1, upgrade_part2, task_token_return_file, import_donation_notin_sf
 
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QVBoxLayout, QTextEdit, QFileDialog, QComboBox, QProgressBar
@@ -61,6 +61,9 @@ def browse_folder():
         elif selected_processing_option == "To Set Burnt and Reject":
             task_set_reject_burnt_status.task_set_reject_burnt(folder_path)
 
+        elif selected_processing_option == "To Import Payment Status Recurring Pledge Donation - Digital":
+            import_donation_notin_sf.import_donation_notin_sf_main(folder_path)
+
         # Simulate progress
         for i in range(101):
             progress_bar.setValue(i)
@@ -106,6 +109,7 @@ if __name__ == '__main__':
     processing_options.addItem("Compare Paydollar and SF")
     processing_options.addItem("Data Cleaning")
     processing_options.addItem("To Set Burnt and Reject")
+    processing_options.addItem("To Import Payment Status Recurring Pledge Donation - Digital")
 
     # Add more processing options as needed
     layout.addWidget(processing_options)
