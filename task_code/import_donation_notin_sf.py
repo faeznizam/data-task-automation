@@ -57,11 +57,23 @@ def import_donation_notin_sf_main(folder_path):
     new_column_format = ['__sescore__External_Pledge_Reference_Id__c', 'npe01__Payment_Date__c','sescore__Payment_Response_Code__c', 'Id']
     merge_df = merge_df[new_column_format]
 
-    log.info('Save file')
+    log.info('Review Result')
+    missing_id_count = merge_df['Id'].isna().sum()
+
+    if missing_id_count != 0:
+        log.info(f'There are {missing_id_count} missing Id in the table!')
+    else:
+        log.info('Everything is good to go!')
+        
+    log.info('Saving file')
     merge_df.to_excel(os.path.join(folder_path, 'to export.xlsx'), index=False)
 
     log.info('Process complete!')
 
+"""
+if __name__ == '__main__':
+    import_donation_notin_sf_main()
 
+"""
 
     
