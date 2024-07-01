@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import warnings
-import logging
+import logging as log
 
 """
 To create code for 2 part process.
@@ -10,12 +10,16 @@ To create code for 2 part process.
 
 """
 
-def task_compare_paydollarsf(folder_path):
+# Configure logging
+log.basicConfig(level=log.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def task_compare_paydollarsf():
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
-    # get folder path
-    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf'
+    
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf\Entire Month'
 
+    log.info('Process Files')
     for file in os.listdir(folder_path):
         # create donation column
         if 'Online OT' in file:
@@ -48,46 +52,88 @@ def task_compare_paydollarsf(folder_path):
             # create paydollar column 
             file_path = os.path.join(folder_path, file)
             paydollar_df = pd.read_excel(file_path, dtype={'Merchant Ref.' : str})
-            drop_row = paydollar_df['Channel Type'] == 'DPL'
-            filtered_paydollar_df = paydollar_df[~drop_row]
-            paydollar_column = filtered_paydollar_df['Merchant Ref.']
-            dedup_paydollar_column = paydollar_column.drop_duplicates()
-            
-    # merge donation and pledge to form a list to be compared with paydollar column 
-    merge_df = pd.concat([donation_column, pledge_column], ignore_index=True)
-    merge_df = merge_df.dropna()
-    merge_df.to_excel(os.path.join(folder_path, 'merged_df.xlsx'), index=False)
+
+            drop_row_channel_type_DPL = paydollar_df['Channel Type'] == 'DPL'
+            paydollar_df = paydollar_df[~drop_row_channel_type_DPL]
+
+            selected_paydollar_column = ['Merchant Ref.', 'Transaction Date']
+            paydollar_df = paydollar_df[selected_paydollar_column]
+
+            paydollar_df = paydollar_df[paydollar_df['Merchant Ref.'].notna()]
+            paydollar_df = paydollar_df.drop_duplicates()
+
+            paydollar_df = paydollar_df.rename(columns={
+                'Merchant Ref.' : 'External Reference Id', 
+                'Transaction Date' : 'npe01__Payment_Date__c'
+            })
+
+        elif 'entire month' in file:
+            file_path = os.path.join(folder_path, file)
+            get_id_df = pd.read_excel(file_path, dtype={'npe01__Opportunity__r.npe03__Recurring_Donation__r.sescore__External_Pledge_Reference_Id__c' : str})
+
+            delete_column_get_id_df_list = [
+                '_','npe01__Opportunity__r','npe01__Opportunity__r.npe03__Recurring_Donation__r',
+                'npe01__Opportunity__r.Name','Name','sescore__Payment_Response_Code__c','sescore__Response_Category__c','npe01__Payment_Date__c'
+                ]
     
-    # to compare data data with stage = pledge and Closed Lost with merchant ref from paydollar
-    condition = (merge_df['Old Stage'] == 'Pledged') | (merge_df['Old Stage'] == 'Closed Lost')
-    filtered_merge_df = merge_df[condition]
+            get_id_df = get_id_df.drop(columns=delete_column_get_id_df_list)
 
-    if filtered_merge_df.empty:
-        logging.info('No data need to be changed to Close Won!')
-    else:
-        # compare
-        condition2 = filtered_merge_df['External Reference Id'].isin(paydollar_column)
-        to_set_closewon_list = filtered_merge_df[condition2]
+            get_id_df = get_id_df.rename(columns={'npe01__Opportunity__r.npe03__Recurring_Donation__r.sescore__External_Pledge_Reference_Id__c' : 'External Reference Id'})
+    
 
-        to_set_closewon_list.loc[:,'StageName'] = 'Closed Won'
+    
 
-        logging.info('Creating file with data to change stage to Close Won!')
-        to_set_closewon_list.to_excel(os.path.join(folder_path, 'to_set_closewon.xlsx'), index=False)
+    
 
+    log.info('Merge Pledge and OT file')
+    # merge donation and pledge to form a list to be compared with paydollar column 
+    pledge_ot_donation_combine = pd.concat([donation_column, pledge_column], ignore_index=True)
+    pledge_ot_donation_combine = pledge_ot_donation_combine.dropna()
+    pledge_ot_donation_combine.to_excel(os.path.join(folder_path, 'merged_df.xlsx'), index=False)
+
+    log.info('Filter the file for Stage = Pledge and Close Lost')
+    # to compare data with stage = pledge and Closed Lost with merchant ref from paydollar
+    filter_condition = (pledge_ot_donation_combine['Old Stage'] == 'Pledged') | (pledge_ot_donation_combine['Old Stage'] == 'Closed Lost')
+    filetered_pledge_ot_donation_combine = pledge_ot_donation_combine[filter_condition]
+
+    log.info('Merge with Paydollar file')
+    main_file = pd.merge(filetered_pledge_ot_donation_combine, paydollar_df, on='External Reference Id', how='left')
+
+    log.info('Filter out empty transaction date row')
+    filter_condition2 = main_file['npe01__Payment_Date__c'].notna()
+    main_file = main_file[filter_condition2]
+
+    log.info('Convert date time format to date')
+    main_file['npe01__Payment_Date__c'] = pd.to_datetime(main_file['npe01__Payment_Date__c'], format='%d/%m/%Y %H:%M:%S')
+    main_file['npe01__Payment_Date__c'] = main_file['npe01__Payment_Date__c'].dt.strftime('%Y-%m-%d')
+
+    log.info('Add Response code column')
+    main_file['sescore__Payment_Response_Code__c'] = 0
+
+    main_file = main_file.drop(columns='Id')
+
+    main_file = pd.merge(main_file, get_id_df, on='External Reference Id', how='left')
+
+    log.info('Save to_set_close_won.xlsx')
+    main_file.to_excel(os.path.join(folder_path, 'to_set_close_won.xlsx'), index=False)
+
+    log.info('Compare data from Paydollar file and Pledge OT file')
     # compare the merge column and paydollar column 
-    not_in_merge_df = dedup_paydollar_column[~dedup_paydollar_column.isin(merge_df['External Reference Id'])]
+    not_in_merge_df = paydollar_df[~paydollar_df['External Reference Id'].isin(pledge_ot_donation_combine['External Reference Id'])]
     not_in_merge_df = not_in_merge_df.dropna()
 
     # not in merge meaning there are transaction not created
-    # so if the df is empty the print status else create file
+    # so if the df is empty the print status, else create file
     if not_in_merge_df.empty:
-        logging.info('All transactions have been created!')
+        log.info('All transactions have been created!')
     else:
+        not_in_merge_df = not_in_merge_df['External Reference Id']
         not_in_merge_df.to_excel(os.path.join(folder_path, 'transaction_not_created.xlsx'), index=False)
-        logging.info('A list of transaction not created has been created!')
+        log.info('A list of transaction not created has been created!')
 
 
 
 
 
-    
+if __name__ == '__main__':
+    task_compare_paydollarsf()
