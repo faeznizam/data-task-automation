@@ -2,8 +2,10 @@
 from .dependencies import process_onetime_conversion, helper_deletion, helper_analyze
 
 # import dependency
+from tabulate import tabulate
 import warnings
 import logging
+
 import os
 
 def one_time_conversion_flow(folder_path):
@@ -39,5 +41,7 @@ def one_time_conversion_flow(folder_path):
             # create analysis table
             helper_analyze.analysis_table(processed_file_info)
 
+            logging.info(tabulate(process_onetime_conversion.count_by_campaign(updated_df), headers="keys", tablefmt="html"))
+
         
-        logging.info('Process Completed.')
+        logging.info('\nProcess Completed.')
