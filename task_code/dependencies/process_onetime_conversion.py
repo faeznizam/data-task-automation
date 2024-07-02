@@ -7,6 +7,14 @@ from datetime import datetime
 import pandas as pd
 import os
 
+def count_by_campaign(updated_df):
+    campaign_count = updated_df.groupby('Campaign Name').size()
+
+    result = campaign_count.reset_index(name='Counts')
+
+    return result
+
+
 def rename_file():
     current_date = datetime.now()
     date_format = current_date.strftime('%Y%m%d')
