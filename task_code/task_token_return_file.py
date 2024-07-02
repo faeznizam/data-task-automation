@@ -69,7 +69,7 @@ def process_file(folder_path, filename):
     df = rename_column(df, filename)
     new_file_name = rename_file(filename)
 
-    logging.info(f'Saving {new_file_name}')
+    logging.info(f'Saving {new_file_name}\n')
     df.to_csv(os.path.join(folder_path, new_file_name), index=False)
 
 def token_return_main(folder_path):
