@@ -5,7 +5,9 @@ import os
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def delete_column(df):
+def delete_column(df, filename):
+    logging.info(f'Deleting file from {filename}')
+
     delete_column_list = [
         'Donor Id','Title','First Name','Last Name','Ethnic','Gender','Street','City','State',
         'Post Code','Country','Home Phone','Work Phone','Mobile Phone','Email','Date of Birth',
@@ -21,6 +23,8 @@ def delete_column(df):
     return df
 
 def rename_column(df, filename):
+    logging.info(f'Renaming column for {filename}')
+
     if 'vsmc_SF' in filename:
         df = df.rename(columns={
         'Truncated CC' : 'sescore__Card_Number_Masked__c',
@@ -40,24 +44,48 @@ def rename_column(df, filename):
     return df
      
 def rename_file(filename):
+    logging.info(f'Renaming file {filename}')
     return f'{filename[:-5]}.csv'
 
+def analyze_file(df, filename):
+    logging.info(f'Analyzing {filename}')
+
+    condition = df['Result'] != 'Tokenized OK'
+
+    if condition is True:
+        logging.info(f'{len(condition)} data from {filename} not tokenized!')
+    else:
+        logging.info('All data has been tokenized!')
+
 def process_file(folder_path, filename):
+    logging.info(f'Processing {filename}')
     file_path = os.path.join(folder_path, filename)
+    
+    logging.info(f'Reading {filename}')
     df = pd.read_excel(file_path)
-    df = delete_column(df)
+
+    analyze_file(df, filename)
+    df = delete_column(df, filename)
     df = rename_column(df, filename)
     new_file_name = rename_file(filename)
+
+    logging.info(f'Saving {new_file_name}')
     df.to_csv(os.path.join(folder_path, new_file_name), index=False)
 
 def token_return_main(folder_path):
 
-    logging.info('Locating files.')
+    # for test data use this
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_token_return_file'
+
     for filename in os.listdir(folder_path):
         if 'vsmc_SF' in filename:
             process_file(folder_path, filename)
         elif 'Token_SF' in filename:
             process_file(folder_path, filename)
     logging.info('Process complete')
+
+
+#if __name__ == '__main__':
+    #token_return_main()
 
 
