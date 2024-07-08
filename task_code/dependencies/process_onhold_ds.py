@@ -62,7 +62,7 @@ def process_ds(agency_folder):
 
     new_file_name = 'Card Pre Expiry Campaign.xlsx'
     new_file_path = os.path.join(agency_folder, new_file_name)
-    combine_df.to_excel(new_file_path, index=False)
+    updated_df.to_excel(new_file_path, index=False)
 
     return combine_df, updated_df, excluded_df, new_file_name
 
