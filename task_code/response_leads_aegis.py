@@ -10,6 +10,7 @@ def process_response_leads_aegis_flow(filename, folder_path):
     updated_df = process_response_leads_aegis.create_aegis_table()
     updated_df = process_response_leads_aegis.copy_data_to_new_table(updated_df, original_df)
     updated_df = process_response_leads_aegis.populate_campaign(updated_df, filename)
+    updated_df = process_response_leads_aegis.date_from_filename(filename, updated_df)
 
     new_file_name = f'{filename[:-4]}.xlsx'
     updated_df.to_excel(os.path.join(folder_path, new_file_name), index=False)
