@@ -18,3 +18,15 @@ def convert_date_format(df):
 def current_date_format_YYYYMMDD():
     current_date = datetime.now() # get current date
     return current_date.strftime('%Y%m%d') # reformat date
+
+# create date in format of DDMMYY
+def current_date_format_DDMMYY():
+    current_date = datetime.now()
+    date_format = current_date.strftime('%d-%m-%y')
+    return date_format
+
+
+"""
+if __name__ == '__main__':
+    current_date_format_DDMMYY()
+"""
