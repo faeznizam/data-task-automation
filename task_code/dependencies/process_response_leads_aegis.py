@@ -1,6 +1,7 @@
 # import dependency
 import pandas as pd
-from .helper_date import current_date_format_DDMMYY
+
+
 
 # create empty dataframe with UTS column format
 def create_aegis_table():
@@ -54,13 +55,23 @@ def create_aegis_table():
     
     return pd.DataFrame(aegis_column_format)
 
+def date_from_filename(filename, df):
+
+    date = f'{filename[14:20]}'
+    filedate = f'{date[4:6]}-{date[2:4]}-{date[0:2]}'
+
+    df['Preferred Change Date'] = filedate
+
+
+
+    return df
+
 # function to copy data from current df to df with UTS format
 def copy_data_to_new_table(new_df, df):
     new_df['Donor Id'] = df['DONOR']
     new_df['Title'] = df['TITLE']
     new_df['First Name'] = df['FNAME']
     new_df['Last Name'] = df['LNAME']
-    new_df['Preferred Change Date'] = current_date_format_DDMMYY()
     new_df['Action'] = df['Final Status']
     new_df['Description'] = df['Final Sub Status']
 
