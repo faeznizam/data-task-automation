@@ -15,17 +15,32 @@ def process_response_leads_aegis_flow(filename, folder_path):
     new_file_name = f'{filename[:-4]}.xlsx'
     updated_df.to_excel(os.path.join(folder_path, new_file_name), index=False)
 
+    return updated_df
+
+
+
 
 def response_leads_aegis_main():
 
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\sample_data\test_data\task_response_leads_aegis'
+    #testing
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\sample_data\test_data\task_response_leads_aegis'
     
+    #production
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Aegis Response Leads\2024\Jun'
+
+    total_row_count = []
+
     for filename in os.listdir(folder_path):
         if 'TM_AG_HR' in filename:
-            process_response_leads_aegis_flow(filename, folder_path)
+            updated_df = process_response_leads_aegis_flow(filename, folder_path)
+            total_row_count.append(len(updated_df))
+
         elif 'TM_AG_SR' in filename:
-            process_response_leads_aegis_flow(filename, folder_path)
-            
+            updated_df = process_response_leads_aegis_flow(filename, folder_path)
+            total_row_count.append(len(updated_df))
+        
+    
+    print(f'Total : {sum(total_row_count)}')
             
         
 
