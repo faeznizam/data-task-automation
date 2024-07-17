@@ -7,6 +7,7 @@ def process_response_leads_aegis_flow(filename, folder_path):
 
     original_df = pd.read_excel(file_path)
 
+    original_df = process_response_leads_aegis.remove_successful_response(original_df)
     updated_df = process_response_leads_aegis.create_aegis_table()
     updated_df = process_response_leads_aegis.copy_data_to_new_table(updated_df, original_df)
     updated_df = process_response_leads_aegis.populate_campaign(updated_df, filename)
@@ -26,7 +27,7 @@ def response_leads_aegis_main():
     #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\sample_data\test_data\task_response_leads_aegis'
     
     #production
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Aegis Response Leads\2024\Jun'
+    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Aegis Response Leads\2024\Jan'
 
     total_row_count = []
 
