@@ -72,7 +72,7 @@ def copy_data_to_new_table(new_df, df):
     new_df['Title'] = df['TITLE']
     new_df['First Name'] = df['FNAME']
     new_df['Last Name'] = df['LNAME']
-    new_df['Action'] = df['Final Status']
+    new_df['Action'] = 'Unsuccessful Calls'
     new_df['Description'] = df['Final Sub Status']
 
     return new_df
@@ -81,11 +81,16 @@ def populate_campaign(df, file):
     if 'HR' in file:
         df['Campaign'] = '7015g000000pFWRAA2'
         df['Campaign Name'] = 'OnHold Startek HR'
-        df['Description'] = 'OnHold Startek HR'
 
     elif 'SR' in file:
         df['Campaign'] = '7015g000000pFWEAA2'
         df['Campaign Name'] = 'OnHold Startek SR'
-        df['Description'] = 'OnHold Startek SR'
     
+    return df
+
+
+def remove_successful_response(df):
+    condition = df['STATUS'] != 'TA'
+    df = df[condition]
+
     return df
