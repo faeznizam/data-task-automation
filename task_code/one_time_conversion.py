@@ -11,8 +11,6 @@ def one_time_conversion_flow(folder_path):
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
 
-    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_onetimeconversion'
-
     # check file
     if any('TMOC' in file for file in os.listdir(folder_path)):
         logging.info('Files already been processed! Please check the folder')
