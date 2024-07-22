@@ -9,11 +9,8 @@ import os
 
 def count_by_campaign(updated_df):
     campaign_count = updated_df.groupby('Campaign Name').size()
-
     result = campaign_count.reset_index(name='Counts')
-
     return result
-
 
 def rename_file():
     current_date = datetime.now()
@@ -49,7 +46,6 @@ def process_file(folder_path, file_name):
     new_file_name = rename_file()
     new_file_path = os.path.join(folder_path, new_file_name)
     updated_df.to_excel(new_file_path, index=False)
-
     return original_df, updated_df, excluded_df, new_file_name
 
 
