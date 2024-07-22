@@ -29,6 +29,4 @@ def delete_condition(df, column_name):
 
     mask = (condition1 | condition2 | condition3 | condition4)
     
-    
-
     return mask
