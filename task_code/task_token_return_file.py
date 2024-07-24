@@ -52,8 +52,8 @@ def analyze_file(df, filename):
 
     condition = df['Result'] != 'Tokenized OK'
 
-    if condition is True:
-        logging.info(f'{len(condition)} data from {filename} not tokenized!')
+    if condition.any():
+        logging.info(f'{condition.sum()} data from {filename} not tokenized!')
     else:
         logging.info('All data has been tokenized!')
 
@@ -72,6 +72,9 @@ def process_file(folder_path, filename):
     logging.info(f'Saving {new_file_name}\n')
     df.to_csv(os.path.join(folder_path, new_file_name), index=False)
 
+    
+    logging.info('Process complete')
+
 def token_return_main(folder_path):
 
     # for test data use this
@@ -82,7 +85,7 @@ def token_return_main(folder_path):
             process_file(folder_path, filename)
         elif 'Token_SF' in filename:
             process_file(folder_path, filename)
-    logging.info('Process complete')
+    
 
 
 #if __name__ == '__main__':
