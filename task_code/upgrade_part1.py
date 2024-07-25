@@ -37,11 +37,11 @@ def task_upgrade_part1_flow(folder_path):
     merged_df = pd.concat(combine_sg_data_list, ignore_index=True)
 
     # filter with conditions
-    merged_df = merged_df[merged_df['Rollup Summary: Ttl # of Pledges'] == 1]
-    merged_df = merged_df[(merged_df['Rollup Summary: Last Pledge Don Amt'] != merged_df['Donation Amount'])]
+    merged_df = merged_df[merged_df['Rollup Summary: Number of Pledges'] == 1]
+    merged_df = merged_df[(merged_df['Rollup Summary: Pledge Last Don Amt'] != merged_df['Donation Amount'])]
 
     # filter for selected column to be include in the output file
-    selected_columns = ['Supporter ID', 'Rollup Summary: Last Pledge Don Amt', 'Donation Amount', 'Pledge ID', 'Serial Number']
+    selected_columns = ['Supporter ID', 'Rollup Summary: Pledge Last Don Amt', 'Donation Amount', 'Pledge ID', 'Serial Number']
     new_df = merged_df.loc[:, selected_columns ]
 
     new_file_name = 'To compare row SG.xlsx'
