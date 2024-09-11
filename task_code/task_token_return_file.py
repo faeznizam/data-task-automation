@@ -6,7 +6,7 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def delete_column(df, filename):
-    logging.info(f'Deleting file from {filename}')
+    
 
     delete_column_list = [
         'Donor Id','Title','First Name','Last Name','Ethnic','Gender','Street','City','State',
@@ -23,7 +23,7 @@ def delete_column(df, filename):
     return df
 
 def rename_column(df, filename):
-    logging.info(f'Renaming column for {filename}')
+    
 
     if 'vsmc_SF' in filename:
         df = df.rename(columns={
@@ -44,11 +44,11 @@ def rename_column(df, filename):
     return df
      
 def rename_file(filename):
-    logging.info(f'Renaming file {filename}')
+    
     return f'{filename[:-5]}.csv'
 
 def analyze_file(df, filename):
-    logging.info(f'Analyzing {filename}')
+    
 
     condition = df['Result'] != 'Tokenized OK'
 
@@ -58,10 +58,10 @@ def analyze_file(df, filename):
         logging.info('All data has been tokenized!')
 
 def process_file(folder_path, filename):
-    logging.info(f'Processing {filename}')
+    
     file_path = os.path.join(folder_path, filename)
     
-    logging.info(f'Reading {filename}')
+    
     df = pd.read_excel(file_path)
 
     analyze_file(df, filename)
@@ -69,7 +69,7 @@ def process_file(folder_path, filename):
     df = rename_column(df, filename)
     new_file_name = rename_file(filename)
 
-    logging.info(f'Saving {new_file_name}\n')
+    
     df.to_csv(os.path.join(folder_path, new_file_name), index=False)
 
     
