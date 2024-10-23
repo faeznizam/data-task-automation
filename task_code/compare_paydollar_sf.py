@@ -13,11 +13,11 @@ To create code for 2 part process.
 # Configure logging
 log.basicConfig(level=log.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def task_compare_paydollarsf():
+def task_compare_paydollarsf(folder_path):
     # Ignore warnings for stylesheets
     warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl.styles.stylesheet')
     
-    folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf\Entire Month'
+    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_compare_paydollar_sf\Entire Month'
 
     log.info('Process Files')
     for file in os.listdir(folder_path):
@@ -131,9 +131,11 @@ def task_compare_paydollarsf():
         not_in_merge_df.to_excel(os.path.join(folder_path, 'transaction_not_created.xlsx'), index=False)
         log.info('A list of transaction not created has been created!')
 
+    log.info('Process Complete')
 
 
 
 
-if __name__ == '__main__':
-    task_compare_paydollarsf()
+
+#if __name__ == '__main__':
+#    task_compare_paydollarsf()
