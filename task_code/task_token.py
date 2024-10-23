@@ -14,7 +14,9 @@ def task_token_main(folder_path):
         logging.info('Files already been processed! Please check the folder')
     else:
         for file_name in os.listdir(folder_path):
-            if 'vsmc' in file_name.lower():
+            if 'ihvsmc' in file_name.lower():
+                token_subfile.process_egfile(folder_path, file_name)
+            elif 'eqvsmc' in file_name.lower():
                 token_subfile.process_egfile(folder_path, file_name)
             elif 'new card' in file_name.lower():
                 token_subfile.process_new_tokenfile(folder_path, file_name)
