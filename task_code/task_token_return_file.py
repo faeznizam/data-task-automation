@@ -25,7 +25,7 @@ def delete_column(df, filename):
 def rename_column(df, filename):
     
 
-    if 'vsmc_SF' in filename:
+    if 'VSMC_SF' in filename:
         df = df.rename(columns={
         'Truncated CC' : 'sescore__Card_Number_Masked__c',
         'Expiry Date' : 'sescore__Card_Expiry__c',
@@ -81,7 +81,7 @@ def token_return_main(folder_path):
     #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\task_code\test_data\task_token_return_file'
 
     for filename in os.listdir(folder_path):
-        if 'vsmc_SF' in filename:
+        if 'VSMC_SF' in filename:
             process_file(folder_path, filename)
         elif 'Token_SF' in filename:
             process_file(folder_path, filename)
