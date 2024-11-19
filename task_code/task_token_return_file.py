@@ -55,7 +55,7 @@ def analyze_file(df, filename):
     if condition.any():
         logging.info(f'{condition.sum()} data from {filename} not tokenized!')
     else:
-        logging.info('All data has been tokenized!')
+        logging.info(f'All data in {filename} has been tokenized!')
 
 def process_file(folder_path, filename):
     
