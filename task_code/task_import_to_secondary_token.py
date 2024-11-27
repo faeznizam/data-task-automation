@@ -9,7 +9,8 @@ BEFORE UPLOAD TO SALESFORCE USING DATALOADER. THE SIMPLIFICATIONS ARE:
 1. DROPPING UNWANTED COLUMN.
 2. RENAME THE COLUMN TO MATCH COLUMN REFERENCE IN SALESFORCE.
 3. COUNT HOW MANY RECORDS THAT HAVE NOT TOKENIZED.
-4. SAVE FILE AS .csv TO ELIMINATE MANUALLY CONVERT THE FILE.
+4. APPEND DATA INTO ONE LIST TO AVOID UPLOADING MULTIPLE TIMES.
+5. SAVE THE MASTER LIST IN CSV
 """
 
 # Logging configuration
@@ -22,11 +23,11 @@ def delete_column(df):
         'Donor Id','Title','First Name','Last Name','Ethnic','Gender','Street','City','State',
         'Post Code','Country','Home Phone','Work Phone','Mobile Phone','Email','Date of Birth',
         'National Id','Last Pledge Amount','Last Pledge Date','Last Cash Amount','Last Cash Date',
-        'Pledge id','Pledge Date','Pledge Start Date','Pledge End Date','Donation Amount',
+        'Pledge Date','Pledge Start Date','Pledge End Date','Donation Amount',
         'Payment Method','Payment Submethod','Frequency','Cardholder Name',
         'Gift Date','Bank Account Holder Name','Bank Account Number','Bank','DRTV Time','Unique Id',
         'Membership No','Action','Description','Campaign','Campaign Name',
-        'DRTV Channel','Creative','Result']
+        'DRTV Channel','Creative','Result', 'External Pledge Reference Id']
     
     df = df.drop(columns=delete_column_list)
 
@@ -59,7 +60,7 @@ def analyze_file(df, filename):
     else:
         logging.info(f'All data in {filename} has been tokenized!')
 
-def process_file(folder_path, filename):
+def process_file(folder_path, filename, list):
     # TO PROCESS FILES WITH ALL FUNCTIONS.
     
     file_path = os.path.join(folder_path, filename)
@@ -67,21 +68,29 @@ def process_file(folder_path, filename):
     analyze_file(df, filename)
     df = delete_column(df)
     df = rename_column(df)
-    new_file_name = rename_file(filename)
-    df.to_csv(os.path.join(folder_path, new_file_name), index=False)
-
-    logging.info('Process complete')
+    df['Filename'] = filename # ADD FILE NAME COLUMN FOR TRACKKING
+    
+    list.append(df)
 
 def import_to_secondary_token(folder_path):
     # OVERALL FLOW
-    
+
+    # CHECK IF PREP FOLDER EXIST OR NOT
+    prep_folder_path = os.path.join(folder_path, 'Prep')
+    if not os.path.exists(prep_folder_path):
+        os.makedirs(prep_folder_path)
+
+    # INITIATE LIST     
+    master_list = []
+
+    # ITERATE OVER ALL ITEM IN THE FOLDER AND PROCESS FILE
     for filename in os.listdir(folder_path):
         if 'MCO_UTS' in filename:
-            process_file(folder_path, filename)
+            process_file(folder_path, filename, master_list)
         
-    
-
-
+    # COMBINE AND SAVE LIST TO .CSV
+    combined_df = pd.concat(master_list, ignore_index=True)
+    combined_df.to_csv(os.path.join(prep_folder_path, f'master_list_{os.path.basename(folder_path)}.csv'), index=False)
 
 
 
