@@ -27,29 +27,35 @@ def delete_column(df):
         'Payment Method','Payment Submethod','Frequency','Cardholder Name',
         'Gift Date','Bank Account Holder Name','Bank Account Number','Bank','DRTV Time','Unique Id',
         'Membership No','Action','Description','Campaign','Campaign Name',
-        'DRTV Channel','Creative','Result', 'External Pledge Reference Id']
+        'DRTV Channel','Creative','Result']
     
     df = df.drop(columns=delete_column_list)
 
     return df
 
-def rename_column(df):
+def rename_column(df,filename):
     # RENAME COLUMN
 
-    df = df.rename(columns={
-                            'Truncated CC' : 'sescore__Card_Number_Masked__c',
-                            'Expiry Date' : 'sescore__Card_Expiry__c',
-                            'Pledge id' : 'Id',
-                            'iPay88 Tokenized ID' : 'sescore__Secondary_Token__c'
-    })
+    if 'MCO_UTS' in filename:
+
+        df = df.rename(columns={
+                                'Truncated CC' : 'sescore__Card_Number_Masked__c',
+                                'Expiry Date' : 'sescore__Card_Expiry__c',
+                                'Pledge id' : 'Id',
+                                'iPay88 Tokenized ID' : 'sescore__Secondary_Token__c'
+        })
+
+    else:
+
+        df = df.rename(columns={
+                                'Truncated CC' : 'sescore__Card_Number_Masked__c',
+                                'Expiry Date' : 'sescore__Card_Expiry__c',
+                                'External Pledge Reference Id' : 'sescore__Pledge_Id__c',
+                                'iPay88 Tokenized ID' : 'sescore__Secondary_Token__c'
+        })
 
     return df
      
-def rename_file(filename):
-    # USING THE SAME FILE NAME FOR UPDATED FILE.
-    
-    return f'{filename[:-5]}.csv'
-
 def analyze_file(df, filename):
     # TO GET TOKENIZED STATUS AND COUNT.
     
@@ -67,7 +73,7 @@ def process_file(folder_path, filename, list):
     df = pd.read_excel(file_path)
     analyze_file(df, filename)
     df = delete_column(df)
-    df = rename_column(df)
+    df = rename_column(df, filename)
     df['Filename'] = filename # ADD FILE NAME COLUMN FOR TRACKKING
     
     list.append(df)
@@ -87,6 +93,9 @@ def import_to_secondary_token(folder_path):
     for filename in os.listdir(folder_path):
         if 'MCO_UTS' in filename:
             process_file(folder_path, filename, master_list)
+
+        elif 'New Card' in filename and 'To Token_SF' in filename:
+            process_file(folder_path, filename, master_list) 
         
     # COMBINE AND SAVE LIST TO .CSV
     combined_df = pd.concat(master_list, ignore_index=True)
