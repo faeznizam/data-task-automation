@@ -23,8 +23,7 @@ def process_response_leads_aegis_flow(filename, folder_path):
 
 def response_leads_aegis_main():
 
-    #testing
-    #folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Documents\Codes\PortableApp\sample_data\test_data\task_response_leads_aegis'
+    
     
     #production
     folder_path = r'C:\Users\mfmohammad\OneDrive - UNICEF\Desktop\TM Schedule Files\Aegis Response Leads\2024\Jun'
