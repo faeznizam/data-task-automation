@@ -7,8 +7,6 @@ import logging
 import os
 
 
-
-
 def winback_nfp_flow(folder_path):
     
     # ignore warnings for stylesheets
