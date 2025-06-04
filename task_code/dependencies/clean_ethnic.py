@@ -1,9 +1,4 @@
 
-
-def clean_ethnic_file(df):
-    df['Ethnic'] = df['Full Name'].apply(categorize_ethnic)
-    return rename_column(df)
-
 def categorize_ethnic(name):
    ethnicity_mapping = {
     'Chinese': {'lee', 'tan', 'lim', 'wong', 'ng', 'yee', 'chin', 'ling', 'chan', 'chong', 'wei', 'hui',
@@ -45,7 +40,10 @@ def categorize_ethnic(name):
               'nabihah','arifin','yahya','ishak','anis','meor','liza','alia','isa','norliana','nadzirah','noordin','shahmin','rashid','aishah',
               'arshad','ariff','izzat','ramli','diana','matin','akbar','halim','harun','aizat','jamal','amira','idris','tengkushahz','shamsuddin',
               'nurhasikin','syahiratul','norhairul','baharudin','zulkiffli','nooraihan','zainuddin','nursafira','kamardin', 'amalina', 'zulkifli', 'hamid','hamzah'
-              'noratikah','syamimi, latif','ungku','aminah','mohsin'},
+              'noratikah','syamimi, latif','ungku','aminah','mohsin', 'aidan', 'anwar', 'athirah', 'yahaya', 'azhari', 'shah',
+              'burhanuddin', 'zakariah', 'hafiz', 'hallim', 'baharin', 'mariam', 'murni', 'yusuf', 'nazarina', 'nazarudin',
+              'noorizatul', 'ikhsan', 'noorul', 'syahana', 'latiff', 'shahrin', 'nazmi', 'syariff', 'hadi', 'zulaikha', 'aida'
+              },
 
     'Indian': {'a/l', 'a/p','rajandran', 'subramaniam','kumar','krishnan', 'devi', 'raja', 'singh', 'muniandy', 'raman', 'nair', 'rao',
                'naidu','krishna', 'ramasamy','esvini', 'panirchellvum', 'hareeshkumar', 'kalaiselvan', 'sugitha', 'anbalagan',
@@ -64,14 +62,24 @@ def categorize_ethnic(name):
                'vaithalingam','kumaresvaran','parameswaran','singaraveloo','suthenthiran','muthukrishna','kaliaperumal','geethaanjali','navaneetham',
                'thinagarash','sandanasamy','gnapragasan','subramanian','govindasamy','palaniappan','sivananthan','kunasagaran','rajendaran','thevarajoo','jakathesan',
                'arunawathi','ravindaran','kaneskumar','jeganathan','gopinathan','chowdhury','yantimala','shanmugom','batumalay','vasudevan','narayanan','periasamy',
-               'yaashdave','arulmozhi','sagadevan','jeyamaran','rengasamy','ilavarasi','thiriidev','prashanth','rajkumar','karthiga','vasanthi','darmaraju'},
+               'yaashdave','arulmozhi','sagadevan','jeyamaran','rengasamy','ilavarasi','thiriidev','prashanth','rajkumar','karthiga','vasanthi','darmaraju', 
+               'rajandree', 'ambeeghai', 'aminath', 'periyanayakam', 'aribahmini', 'kaur', 'balvinder', 'ganesh', 'marathamuthu',
+               'jagadiswaran', 'jayanthi', 'lashman', 'panchanathan', 'lingam', 'mugunthan', 'parameswary', 'parveen', 'kaur',
+               'pavithra', 'siva', 'prabu','deva','pravin', 'thanabalan', 'puvaneswary', 'ganasan', 'puvan', 'selvakanapathy',
+               'rajathi', 'ponnalagu', 'khandaker', 'revekha', 'suraj', 'rprakash', 'ramanathan', 'sarrany', 'rajandren', 'sethu',
+               'mathawan', 'arikrishnan', 'dasgupta', 'soundaryah', 'pandurajan', 'sruthi', 'sivanathan', 'suha', 'manickam',
+               'supparamaniyan', 'munusaamy', 'suriamoorthy', 'apalandu', 'sururthy', 'balu', 'sutha', 'anandan', 'tharshana',
+               'sivabalan', 'thelagam', 'thandayeethan', 'nethevanan', 'thirunangaran', 'yugeash', 'varma', 'yuvarooban'
+               },
 
     'Others': {'john', 'james', 'emily', 'family', 'edward', 'grace', 'rachel', 'david', 'audrey', 'gomes', 'florance', 'nyihin',
-               'elisa', 'christy', 'christ', 'elango', 'minjae','hera', 'pauline', 'jon', 'michael','thida','wendy',
+               'elisa', 'christy', 'christ', 'elango', 'minjae','hera', 'pauline', 'jon', 'michael','thida','wendy', 'not', 'name',
                'phina','ambrose','haller','martin','samuel','stacy','nikko','harry','hema','anna','devy','mia','christopher',
                'bernadette','alexandra','josephine','emmanuel','priscila','jonathan','benedict','jessica','anthony','jasmine','francis','kanmani',
                'rebecca','charles','ramday','angela','judith','nathan','alicia','thomas','jimmy','mogana','annie','reddy','jacob','brown','wattanagitiphat',
-               'nageiswery','jessamine','chrizelda','frederick','sherlynee','jessindra','nattawin','swatheka','florence','jennifer','wazooski', 'fernandez'},
+               'nageiswery','jessamine','chrizelda','frederick','sherlynee','jessindra','nattawin','swatheka','florence','jennifer','wazooski', 'fernandez'
+               'aden', 'seok', 'eunsoo'
+               },
    } 
 
    name_words = name.lower()
@@ -102,3 +110,12 @@ def rename_column(df):
     df.rename(columns = {'Ethnic' : 'MCO_Ethnic__c'}, inplace=True)
 
     return df
+
+def columns_to_keep():
+  columns = ['Supporter ID', 'MCO_Ethnic__c']
+
+  return columns
+
+def clean_ethnic_file(df):
+    df['Ethnic'] = df['Full Name'].apply(categorize_ethnic)
+    return rename_column(df)

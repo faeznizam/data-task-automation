@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 import os
 
 
@@ -12,10 +13,13 @@ def get_deleted_info(excluded_df, deleted_list, new_file_name):
         
 
 def create_deleted_list(deleted_list, folder_path):
+    current_date = datetime.now()
+    date_format = current_date.strftime('%y%m%d') 
+
     # empty list gave out False boolean
     if deleted_list:
         final_deleted_df = pd.concat(deleted_list, ignore_index=True)
-        final_deleted_df.to_excel(os.path.join(folder_path, 'deleted_list.xlsx'), index=False)
+        final_deleted_df.to_excel(os.path.join(folder_path, f'deleted_list_{date_format}.xlsx'), index=False)
     else:
         print('No deleted list created.')
 

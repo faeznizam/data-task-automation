@@ -25,8 +25,3 @@ def current_date_format_DDMMYY():
     date_format = current_date.strftime('%d-%m-%y')
     return date_format
 
-
-"""
-if __name__ == '__main__':
-    current_date_format_DDMMYY()
-"""

@@ -20,7 +20,7 @@ def rename_file(file, date_format):
     original_filename = file[:-5]
     return f'{original_filename}_{date_format}.xlsx'
 
-def process_file(file, folder_path, date_format, clean_function):
+def process_file(file, folder_path, date_format, cleaning_function, columns_to_keep):
     file_path = create_file_path(folder_path, file)
     df = pd.read_excel(file_path)
 
@@ -29,7 +29,7 @@ def process_file(file, folder_path, date_format, clean_function):
         df['National ID'] = df['National ID'].astype(str)
 
     # process function
-    df = clean_function(df)
+    df = cleaning_function(df)
 
     df['Date'] = date_format
 
@@ -38,6 +38,14 @@ def process_file(file, folder_path, date_format, clean_function):
     new_file_name = rename_file(file, date_format)
     new_file_path = create_file_path(folder_path, new_file_name)
     df.to_excel(new_file_path, index=False)
+
+    # filter out unrelated column and save in csv
+    needed_columns = columns_to_keep
+    filtered_df = df[needed_columns]
+
+    filtered_df.to_csv(new_file_path.replace('.xlsx', '.csv'), index=False)
+    
+
 
     logging.info(f'{new_file_name} has been created. ')
     
@@ -52,18 +60,19 @@ def task_data_cleaning_main(folder_path):
     date_format = helper_date.current_date_format()
 
     file_cleaning_map = {
-        'Donor With Invalid Email.xlsx' : clean_email.clean_email_file, 
-        'Donor With Invalid IC.xlsx' : clean_icnumber.clean_ic_file,
-        'Donor With Invalid Phone Number.xlsx' : clean_phone_number.clean_phone_file, 
-        'Donor Without Age and Birthdate.xlsx' : clean_birthdate.clean_birthdate_file,
-        'Donor Without Ethnic.xlsx' : clean_ethnic.clean_ethnic_file,
-        'Donor Without Gender.xlsx' : clean_gender.clean_gender_file 
+        'Donor With Invalid Email.xlsx' : (clean_email.clean_email_file, clean_email.columns_to_keep()), 
+        'Donor With Invalid IC.xlsx' : (clean_icnumber.clean_ic_file, clean_icnumber.columns_to_keep()),
+        'Donor With Invalid Phone Number.xlsx' : (clean_phone_number.clean_phone_file, clean_phone_number.columns_to_keep()), 
+        'Donor Without Age and Birthdate.xlsx' : (clean_birthdate.clean_birthdate_file, clean_birthdate.columns_to_keep()),
+        'Donor Without Ethnic.xlsx' : (clean_ethnic.clean_ethnic_file, clean_ethnic.columns_to_keep()),
+        'Donor Without Gender.xlsx' : (clean_gender.clean_gender_file, clean_gender.columns_to_keep()) 
 
     }
 
     for file in os.listdir(folder_path):
         if file in file_cleaning_map:
-            process_file(file, folder_path, date_format, file_cleaning_map[file])
+            cleaning_function, columns_to_keep = file_cleaning_map[file]
+            process_file(file, folder_path, date_format, cleaning_function, columns_to_keep)
         
 
 

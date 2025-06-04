@@ -6,8 +6,6 @@ import warnings
 import logging
 import os
 
-
-
 """
 The code should check for these things:
 1. Get row after comparing Rollup Summary: Last Pledge Don Amt column and Donation Amount column.
@@ -23,6 +21,7 @@ def task_upgrade_part1_flow(folder_path):
 
     ignore_warning()
 
+    """
     combine_sg_data_list = []
 
     for file in os.listdir(folder_path):
@@ -49,6 +48,7 @@ def task_upgrade_part1_flow(folder_path):
     new_df.to_excel(new_file_path, index=False)
 
     logging.info(f'{new_file_name} has been created!')
+    """
     
     # initiate list to append if there is blank in card number or card expiry date
     file_check = []

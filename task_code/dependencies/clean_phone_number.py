@@ -1,8 +1,5 @@
 
-# process file
-def clean_phone_file(df):
-    df = process_mobile_numbers(df)
-    return rename_column(df)
+
 
 # function
 def process_mobile_numbers(df):
@@ -46,3 +43,13 @@ def rename_column(df):
     df.rename(columns = {'Updated Mobile' : 'MobilePhone'}, inplace=True)
 
     return df
+
+def columns_to_keep():
+  columns = ['Supporter ID', 'MobilePhone']
+
+  return columns
+
+# process file
+def clean_phone_file(df):
+    df = process_mobile_numbers(df)
+    return rename_column(df)

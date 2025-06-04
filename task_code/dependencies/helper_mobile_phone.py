@@ -1,5 +1,4 @@
 
-
 def process_mobile_numbers(df, column):
     # remove empty space and hyphens
     df[column] = df[column].str.replace(r'[A-Za-z +\-]', '', regex=True)
@@ -8,6 +7,7 @@ def process_mobile_numbers(df, column):
     return df
 
 def reformat_mobile_number(x):
+    # reformat based on prefix
 
     if x.startswith('011') and len(x) == 11:
         return x[:3] + '-' + x[3:]
@@ -21,6 +21,7 @@ def reformat_mobile_number(x):
         return x
     
 def delete_condition(df, column_name):
+    # to filter data
 
     condition1 = (df[column_name].str.startswith('011')) & (df[column_name].str.len() != 12)
     condition2 = df[column_name].str.contains(r'^01[0-9&&[^1]]-') & (df[column_name].str.len() != 11)

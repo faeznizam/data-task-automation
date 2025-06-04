@@ -37,7 +37,7 @@ def upgrade_part2_flow(folder_path):
                 helper_deletion.get_deleted_info(excluded_df, deleted_list, new_file_name)
                 
                 # get row count
-                helper_analyze.get_row_count(original_df, updated_df, new_file_name, processed_file_info)
+                helper_analyze.get_row_count_and_amount(original_df, updated_df, new_file_name, processed_file_info)
 
         # create deleted list
         helper_deletion.create_deleted_list(deleted_list, folder_path)

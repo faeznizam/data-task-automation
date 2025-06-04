@@ -1,63 +1,51 @@
 import datetime
-import calendar
 import re
+from datetime import datetime
+
+def extract_and_validate_yymmdd(x):
+  if len(x) == 12:
+    match = re.search(r'\d{6}', x)
+
+    if match:
+      yymmdd = match.group(0)
+
+      # get 2 digit number for current year
+      current_yy = int(datetime.today().strftime("%y"))
+      input_yy = int(yymmdd[:2])
+
+      # categorize century
+      century = 1900 if input_yy > current_yy else 2000
+      full_year = century + input_yy
+
+      full_date_str = f"{full_year}{yymmdd[2:]}"  # YYYYMMDD string
+
+      try:
+        # Validate date
+        datetime.strptime(full_date_str, "%Y%m%d")
+
+        # Reformat the full 12-char cleaned ID with dashes
+        return f"{x[:6]}-{x[6:8]}-{x[8:]}"
+      
+      except ValueError:
+        return None
+          
+  return None
+
+def columns_to_keep():
+  columns = ['Supporter ID', 'sescore__National_Id__c']
+
+  return columns
 
 def clean_ic_file(df):
-    df['Updated National ID'] = df['National ID'].apply(validate_nat_id)
-    df = blank_invalid_ic(df)
-    return rename_column(df)
 
-def validate_nat_id(national_id):
-  # change data type
-  national_id = str(national_id)
+  df['Updated National ID'] = (
+    df['National ID']
+    .str.replace(r'[^A-Za-z0-9]', '', regex=True)
+    .apply(lambda x : extract_and_validate_yymmdd(x))
+    )
 
-  # Remove hyphens and spaces
-  national_id_cleaned = national_id.replace("-", "").replace(" ", "")
+  df.rename(columns = {'Updated National ID' : 'sescore__National_Id__c'}, inplace=True)
 
-  # Check if the cleaned national ID has a length of 12
-  if len(national_id_cleaned) == 12:
-    # check if nat_id valid using is_valid_date function, then return restructured format
-    if is_valid_date(national_id_cleaned):
-      return f"{national_id_cleaned[:6]}-{national_id_cleaned[6:8]}-{national_id_cleaned[8:]}"
-  
-  return national_id
+  return df
 
-def is_valid_date(national_id):
-  # get the first 6 number and assign to year month and day
-  if len(national_id) == 12:
-    year = national_id[0:2]
-    month = national_id[2:4]
-    day = national_id[4:6]
 
-    # get current year
-    current_year = datetime.datetime.now().year % 100
-
-    # Determine the century based on the last 2 digits in the year. If year less and equal to current year
-    # then century = 20
-    if int(year) <= current_year:
-        century = 20
-    else:
-        century = 19
-
-    # Check if the month is valid
-    if 1 <= int(month) <= 12:
-        # Check if the day is valid for the given month
-        max_day = calendar.monthrange(century * 100 + int(year), int(month))[1]
-        if 1 <= int(day) <= max_day:
-            return True
-
-    return False
-  
-def blank_invalid_ic(df):
-   # match pattern
-   national_id_pattern = re.compile(r'^\d{6}-\d{2}-\d{4}$')
-
-   # apply nat id pattern, blank if not match
-   df['Updated National ID'] = df['Updated National ID'].apply(lambda x: x if national_id_pattern.match(x) else '')
-   
-   return df 
-
-def rename_column(df):
-    df.rename(columns = {'Updated National ID' : 'sescore__National_Id__c'}, inplace=True)
-
-    return df

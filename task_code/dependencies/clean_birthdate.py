@@ -1,12 +1,9 @@
-import calendar
-import datetime
 
-def clean_birthdate_file(df):
-    df['National ID'] = df['National ID'].apply(validate_nat_id)
-    df['Birthdate'] = df['National ID'].apply(calculate_birthdate)
-    df['Age'] = df['Birthdate'].apply(calculate_age)
-    return df
+from datetime import datetime
+import re
 
+
+"""
 
 def validate_nat_id(national_id):
 
@@ -88,4 +85,53 @@ def calculate_age(birthdate):
    age = current_year - birth_year
 
    return age 
+
+"""
+
+def extract_and_validate_yymmdd(x):
+  if len(x) == 12:
+    match = re.search(r'\d{6}', x)
+
+    if match:
+      yymmdd = match.group(0)
+
+      # get 2 digit number for current year
+      current_yy = int(datetime.today().strftime("%y"))
+      input_yy = int(yymmdd[:2])
+
+      # categorize century
+      century = 1900 if input_yy > current_yy else 2000
+      full_year = century + input_yy
+
+      full_date_str = f"{full_year}{yymmdd[2:]}"  # YYYYMMDD string
+
+      try:
+        # Validate date
+        datetime.strptime(full_date_str, "%Y%m%d")
+
+        # Reformat the full 12-char cleaned ID with dashes
+        return f'{full_date_str[:4]}' + '-' + f'{full_date_str[4:6]}' + '-' + f'{full_date_str[6:]}'
+      
+      except ValueError:
+        return None
+          
+  return None
+
+def columns_to_keep():
+  columns = ['Supporter ID', 'Birthdate']
+
+  return columns
+
+def clean_birthdate_file(df):
+
+   df['Birthdate'] = (
+      df['National ID']
+      .str.replace(r'[^A-Za-z0-9]', '', regex=True)
+      .apply(lambda x : extract_and_validate_yymmdd(x))
+      )
+   
+   return df
+
+
+      
 
